@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME}
         main.cpp
 
         streams.cpp
-        two_sum.cpp)
+        leetcode_two_sum.cpp leetcode_two_arrays_intersect.cpp)
 
 target_link_libraries(
         ${PROJECT_NAME}
