@@ -41,8 +41,10 @@ public:
         for (auto iter = banknotes.rbegin(); iter != banknotes.rend(); ++iter) {
             int64_t currency = iter->first;
             int64_t currAmount = iter->second;
-            if (currency > remaining)
+            if (currency > remaining) {
+                i--;
                 continue;
+            }
             int withdrawBanknotes = std::min(currAmount, remaining / currency);
             remaining -= withdrawBanknotes * currency;
             withdrBanknotes[i] += withdrawBanknotes;
