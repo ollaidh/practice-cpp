@@ -10,7 +10,7 @@ public:
     std::string longestCommonPrefix(std::vector<std::string>& strs) {
         std::string result;
         for (int i = 0; i < size(strs[0]); i++) {
-            for (std::string word : strs) {
+            for (const std::string& word : strs) {
                 if (size(word) <= i)
                     return result;
                 if (word[i] != strs[0][i]) {

@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME}
         main.cpp
 
         streams.cpp
-        leetcode/two_sum.cpp leetcode/two_arrays_intersect.cpp leetcode/underground_system.cpp leetcode/atm_machine.cpp array_on_stack_test.cpp)
+        leetcode/two_sum.cpp leetcode/two_arrays_intersect.cpp leetcode/underground_system.cpp leetcode/atm_machine.cpp array_on_stack_test.cpp "leetcode/14_longest_common_prefix .cpp")
 
 target_link_libraries(
         ${PROJECT_NAME}
