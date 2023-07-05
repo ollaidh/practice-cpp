@@ -27,10 +27,10 @@ public:
 TEST(Prefix, commonPrefix) {
     Solution solution = Solution();
 
-//    std::vector<std::string> input_1 = {"flower", "flow", "flight"};
-//    ASSERT_EQ("fl", solution.longestCommonPrefix(input_1));
-//    std::vector<std::string> input_2 = {"dog", "racecar", "car"};
-//    ASSERT_EQ("", solution.longestCommonPrefix(input_2));
+    std::vector<std::string> input_1 = {"flower", "flow", "flight"};
+    ASSERT_EQ("fl", solution.longestCommonPrefix(input_1));
+    std::vector<std::string> input_2 = {"dog", "racecar", "car"};
+    ASSERT_EQ("", solution.longestCommonPrefix(input_2));
     std::vector<std::string> input_3 = {"racecar", "racecar", "racecar"};
     ASSERT_EQ("racecar", solution.longestCommonPrefix(input_3));
     std::vector<std::string> input_4 = {"ab", "a", "ac"};
