@@ -32,7 +32,6 @@ std::ostream& operator << (std::ostream& stream, const Person& p) {
 
 TEST(overloadOstream, overload) {
     Person p("Piu", "Miu");
-    std::cout << p << std::endl;
 
     std::stringstream stream;
     stream << p << std::endl;
