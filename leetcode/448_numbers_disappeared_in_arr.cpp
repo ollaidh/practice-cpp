@@ -1,12 +1,38 @@
+// Given an array nums of n integers where nums[i] is in the range [1, n],
+// return an array of all the integers in the range [1, n] that do not appear in nums.
+
 #include <gtest/gtest.h>
 #include <vector>
-# include <set>
+#include <unordered_set>
 
 class Solution {
 public:
     std::vector<int> findDisappearedNumbers(std::vector<int>& nums) {
         std::vector<int> result;
+        result.reserve(nums.size());
+        std::unordered_set<int> present;
 
+        for (int num : nums) {
+            present.insert(num);
+        }
+
+        for (int i = 1; i <= nums.size(); i++) {
+            if (present.find(i) == present.end())
+                result.push_back(i);
+        }
+        return result;
     }
 };
+
+TEST(TestNumDissap, findDisappearedNumbs) {
+    Solution solution;
+
+    std::vector<int> input1 = {4, 3, 2, 7, 8, 2, 3, 1};
+    std::vector<int> result1 = {5, 6};
+    ASSERT_EQ(result1, solution.findDisappearedNumbers(input1));
+
+    std::vector<int> input2 = {1, 1};
+    std::vector<int> result2 = {2};
+    ASSERT_EQ(result2, solution.findDisappearedNumbers(input2));
+}
 
