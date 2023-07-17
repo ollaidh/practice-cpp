@@ -43,7 +43,7 @@ add_executable(${PROJECT_NAME}
         learncpp/4-12_prime_numbers.cpp
 
         HackerRank/overload_ostream_operator.cpp
-        )
+        leetcode/409_longest_palindrome.cpp)
 
 target_link_libraries(
         ${PROJECT_NAME}
