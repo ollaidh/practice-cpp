@@ -7,12 +7,13 @@
 
 class Solution {
 public:
-    std::vector<int> findDisappearedNumbers(std::vector<int>& nums) {
-        std::vector<int> result;
+    template<typename T>
+    std::vector<T> findDisappearedNumbers(std::vector<T>& nums) {
+        std::vector<T> result;
         result.reserve(nums.size());
-        std::unordered_set<int> present;
+        std::unordered_set<T> present;
 
-        for (int num : nums) {
+        for (T num : nums) {
             present.insert(num);
         }
 
@@ -34,5 +35,17 @@ TEST(TestNumDissap, findDisappearedNumbs) {
     std::vector<int> input2 = {1, 1};
     std::vector<int> result2 = {2};
     ASSERT_EQ(result2, solution.findDisappearedNumbers(input2));
+}
+
+TEST(TestNumDissap, findDisappearedNumbsLong) {
+    Solution solution;
+
+    std::vector<int64_t> input1 = {4, 3, 2, 7, 8, 2, 3, 1};
+    std::vector<int64_t> result1 = {5, 6};
+    ASSERT_EQ(result1, solution.findDisappearedNumbers<int64_t>(input1));
+
+    std::vector<int64_t> input2 = {1, 1};
+    std::vector<int64_t> result2 = {2};
+    ASSERT_EQ(result2, solution.findDisappearedNumbers<int64_t>(input2));
 }
 
