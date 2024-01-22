@@ -36,24 +36,42 @@
 //     return 0;
 // }
 
+// int main()
+// {
+//     std::string input;
+//     int counter = -2;
+
+//     std::cin >> input;
+
+//     for (int i = 0; i < input.size(); i++) {
+//         if (input[i] == 'f') {
+//             counter += 1;
+//             if (counter == 0) {
+//                 std::cout << i;
+//                 return 0;
+//             }
+//         }
+//     }
+//     std::cout << counter;
+
+
+//     return 0;
+// }
+
 int main()
 {
-    std::string input;
-    int counter = -2;
-
-    std::cin >> input;
-
-    for (int i = 0; i < input.size(); i++) {
-        if (input[i] == 'f') {
-            counter += 1;
-            if (counter == 0) {
-                std::cout << i;
-                return 0;
-            }
+    int a;
+    int b;
+    std::cin >> a >> b;
+    while (a != 0 && b != 0) {
+        if (a > b) {
+            a = a % b;
+        }
+        else {
+            b = b % a;
         }
     }
-    std::cout << counter;
-
+    std::cout << a + b;
 
     return 0;
 }
