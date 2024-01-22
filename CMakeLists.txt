@@ -56,6 +56,11 @@ add_subdirectory(yandex-belts/white-belt/1-5_min)
 add_subdirectory(yandex-belts/white-belt/1-5_eq)
 add_subdirectory(yandex-belts/white-belt/1-7_1)
 add_subdirectory(yandex-belts/white-belt/1-7_2)
+add_subdirectory(yandex-belts/white-belt/2-1_1)
+add_subdirectory(yandex-belts/white-belt/2-1_2)
+add_subdirectory(yandex-belts/white-belt/2-1_3)
+
+
 
 
 
