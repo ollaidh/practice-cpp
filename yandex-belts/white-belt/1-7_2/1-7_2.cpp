@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <string>
+#include <algorithm>
 
 // int main()
 // {
@@ -58,20 +60,37 @@
 //     return 0;
 // }
 
+// int main()
+// {
+//     int a;
+//     int b;
+//     std::cin >> a >> b;
+//     while (a != 0 && b != 0) {
+//         if (a > b) {
+//             a = a % b;
+//         }
+//         else {
+//             b = b % a;
+//         }
+//     }
+//     std::cout << a + b;
+
+//     return 0;
+// }
+
 int main()
 {
-    int a;
-    int b;
-    std::cin >> a >> b;
-    while (a != 0 && b != 0) {
-        if (a > b) {
-            a = a % b;
-        }
-        else {
-            b = b % a;
-        }
+    int decimal;
+    std::cin >> decimal;
+    std::string binary;
+
+    while (decimal != 0) {
+        binary.append(std::to_string(decimal % 2));
+        decimal /= 2;
     }
-    std::cout << a + b;
+
+    std::reverse(binary.begin(), binary.end());
+    std::cout << binary;
 
     return 0;
 }
