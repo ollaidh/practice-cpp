@@ -24,6 +24,7 @@
 //     return 0;
 // }
 
+// print even numbers in given interval
 // int main()
 // {
 //     int a;
@@ -38,6 +39,7 @@
 //     return 0;
 // }
 
+// find position of second appearence of "f"
 // int main()
 // {
 //     std::string input;
@@ -60,6 +62,7 @@
 //     return 0;
 // }
 
+// find GCD
 // int main()
 // {
 //     int a;
@@ -78,6 +81,7 @@
 //     return 0;
 // }
 
+// decimal to binary:
 int main()
 {
     int decimal;
