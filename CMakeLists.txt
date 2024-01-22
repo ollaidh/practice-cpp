@@ -43,9 +43,19 @@ add_executable(${PROJECT_NAME}
         learncpp/4-12_prime_numbers.cpp
 
         HackerRank/overload_ostream_operator.cpp
-        leetcode/409_longest_palindrome.cpp unspecified/virt_functions_play.cpp unspecified/inheritance_playground.cpp)
+        leetcode/409_longest_palindrome.cpp unspecified/virt_functions_play.cpp unspecified/inheritance_playground.cpp Homeworks/square_equation.cpp)
+
 
 target_link_libraries(
         ${PROJECT_NAME}
         GTest::gtest_main
 )
+
+add_subdirectory(yandex-belts/white-belt/1-4)
+add_subdirectory(yandex-belts/white-belt/1-5_min)
+add_subdirectory(yandex-belts/white-belt/1-5_eq)
+add_subdirectory(yandex-belts/white-belt/1-7_1)
+add_subdirectory(yandex-belts/white-belt/1-7_2)
+
+
+
