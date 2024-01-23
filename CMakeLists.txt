@@ -43,7 +43,10 @@ add_executable(${PROJECT_NAME}
         learncpp/4-12_prime_numbers.cpp
 
         HackerRank/overload_ostream_operator.cpp
-        leetcode/409_longest_palindrome.cpp unspecified/virt_functions_play.cpp unspecified/inheritance_playground.cpp Homeworks/square_equation.cpp)
+        leetcode/409_longest_palindrome.cpp
+        unspecified/virt_functions_play.cpp
+        unspecified/inheritance_playground.cpp
+)
 
 
 target_link_libraries(
@@ -60,6 +63,8 @@ add_subdirectory(yandex-belts/white-belt/2-1_1)
 add_subdirectory(yandex-belts/white-belt/2-1_2)
 add_subdirectory(yandex-belts/white-belt/2-1_3)
 add_subdirectory(yandex-belts/white-belt/2-2_1)
+add_subdirectory(yandex-belts/white-belt/2-2_2)
+
 
 
 
