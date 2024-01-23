@@ -47,7 +47,6 @@ public:
         assert(m_currTravelling.count(id) != 0);
         int currTravelTime = t - m_currTravelling[id].timeCheckIn;
         assert(currTravelTime > 0);
-        m_currTravelling.count(id) != 0 and currTravelTime > 0;
         m_travelTimes[m_currTravelling[id].stationCheckIn][stationName].push_back(currTravelTime);
         m_currTravelling.erase(id);
     }
