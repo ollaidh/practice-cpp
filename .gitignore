@@ -1,5 +1,5 @@
 cmake-build*
 .idea
 Homeworks
-build
+build/
 .cache
