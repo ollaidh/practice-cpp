@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <map>
 #include <vector>
@@ -9,40 +10,40 @@ class Routes {
 
 public:
     void newBus(std::string bus, std::vector<std::string> stops) {
-        m_buses[bus] = stops;
-        for (std::string stop : stops) {
+        for (const std::string& stop : stops) {
             m_stops[stop].push_back(bus);
         }
+        m_buses[std::move(bus)] = std::move(stops);
     }
 
-    void busesForStop(std::string stop) {
+    void printBusesForStop(const std::string& stop, std::ostream& stream) const {
         if (m_stops.find(stop) == m_stops.end()) {
-            std::cout << "No stop" << "\n";
+            stream << "No stop" << "\n";
         } else {
-            for (auto& bus : m_stops[stop]) {
-                std::cout << bus << " ";
+            for (auto& bus : m_stops.at(stop)) {
+                stream << bus << " ";
             }
-            std::cout << "\n";
+            stream << "\n";
         }
 
     }
 
-    void stopsForBus(std::string bus) {
+    void printStopsForBus(const std::string& bus, std::ostream& stream) const {
         if (m_buses.find(bus) == m_buses.end()) {
-            std::cout << "No bus" << "\n";
+            stream << "No bus" << "\n";
 
         } else {
-            for (auto& stop : m_buses[bus]) {
-                std::cout << "Stop " << stop << ": ";
-                if (m_stops[stop].size() == 1) {
-                    std::cout << "no interchange" << "\n";
+            for (auto& stop : m_buses.at(bus)) {
+                stream << "Stop " << stop << ": ";
+                if (m_stops.at(stop).size() == 1) {
+                    stream << "no interchange" << "\n";
                 } else {
-                    for (const auto& curr_bus : m_stops[stop]) {
-                        if (curr_bus != bus) {
-                            std::cout << curr_bus << " ";
+                    for (const auto& currBus : m_stops.at(stop)) {
+                        if (currBus != bus) {
+                            stream << currBus << " ";
                         }
                     }
-                    std::cout << "\n";
+                    stream << "\n";
                 }
             }
 
@@ -50,17 +51,17 @@ public:
 
     }
 
-    void allBuses() const {
+    void printAllBuses(std::ostream& stream) const {
         if (m_buses.size() == 0) {
-            std::cout << "No buses" << "\n";
+            stream << "No buses" << "\n";
 
         } else {
             for (const auto& [key, value] : m_buses) {
-                std::cout << "Bus " << key << ": ";
+                stream << "Bus " << key << ": ";
                 for (const auto& stop : value) {
-                    std::cout << stop << " ";
+                    stream << stop << " ";
                 }
-                std::cout << "\n";
+                stream << "\n";
             }
         }
     }
@@ -93,13 +94,13 @@ int main()
         } else if (command == "BUSES_FOR_STOP") {
             std::string stop;
             std::cin >> stop;
-            routes.busesForStop(std::move(stop));
+            routes.printBusesForStop(stop, std::cout);
         } else if (command == "STOPS_FOR_BUS") {
             std::string bus;
             std::cin >> bus;
-            routes.stopsForBus(std::move(bus));
+            routes.printStopsForBus(bus, std::cout);
         } else if (command == "ALL_BUSES") {
-            routes.allBuses();
+            routes.printAllBuses(std::cout);
         }
     }
 
