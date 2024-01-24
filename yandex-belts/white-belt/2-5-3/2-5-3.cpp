@@ -15,11 +15,11 @@ public:
         }
     }
 
-    void const busesForStop(std::string stop) {
+    void busesForStop(std::string stop) {
         if (m_stops[stop].size() == 0) {
             std::cout << "No stop" << "\n";
         } else {
-            for (const auto& bus : m_stops[stop]) {
+            for (auto& bus : m_stops[stop]) {
                 std::cout << bus << " ";
             }
             std::cout << "\n";
@@ -27,12 +27,12 @@ public:
 
     }
 
-    void const stopsForBus(std::string bus) {
+    void stopsForBus(std::string bus) {
         if (m_buses[bus].size() == 0) {
             std::cout << "No bus" << "\n";
 
         } else {
-            for (const auto& stop : m_buses[bus]) {
+            for (auto& stop : m_buses[bus]) {
                 std::cout << "Stop " << stop << ": ";
                 if (m_stops[stop].size() == 1) {
                     std::cout << "no interchange" << "\n";
@@ -50,7 +50,7 @@ public:
 
     }
 
-    void const allBuses() {
+    void allBuses() const {
         if (m_buses.size() == 0) {
             std::cout << "No buses" << "\n";
 
@@ -98,7 +98,7 @@ int main()
             std::string bus;
             std::cin >> bus;
             routes.stopsForBus(std::move(bus));
-        } else {
+        } else if (command == "ALL_BUSES") {
             routes.allBuses();
         }
     }
