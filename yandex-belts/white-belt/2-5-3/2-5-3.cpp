@@ -16,7 +16,7 @@ public:
     }
 
     void busesForStop(std::string stop) {
-        if (m_stops[stop].size() == 0) {
+        if (m_stops.find(stop) == m_stops.end()) {
             std::cout << "No stop" << "\n";
         } else {
             for (auto& bus : m_stops[stop]) {
@@ -28,7 +28,7 @@ public:
     }
 
     void stopsForBus(std::string bus) {
-        if (m_buses[bus].size() == 0) {
+        if (m_buses.find(bus) == m_buses.end()) {
             std::cout << "No bus" << "\n";
 
         } else {
