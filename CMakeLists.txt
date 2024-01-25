@@ -78,6 +78,7 @@ add_subdirectory(yandex-belts/white-belt/2-6-2)
 add_subdirectory(yandex-belts/white-belt/2-6-3)
 add_subdirectory(yandex-belts/white-belt/2-6-4)
 add_subdirectory(yandex-belts/white-belt/3-1-1)
+add_subdirectory(yandex-belts/white-belt/3-1-2)
 
 
 

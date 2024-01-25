@@ -12,3 +12,7 @@ std::set<std::string> BuildMapValuesSet(const std::map<int, std::string>& m) {
     return result;;
 
 }
+
+int main() {
+    return 0;
+}
