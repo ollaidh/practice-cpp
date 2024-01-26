@@ -29,9 +29,6 @@ public:
       return name->second + " with unknown last name";
     }
 
-    // auto upper = names.upper_bound(year);
-    // auto lower = names.lower_bound(year);
-
     return name->second + " " + surname->second;
   }
 private:
