@@ -81,10 +81,7 @@ add_subdirectory(yandex-belts/white-belt/3-1-1)
 add_subdirectory(yandex-belts/white-belt/3-1-2)
 add_subdirectory(yandex-belts/white-belt/3-4-1)
 add_subdirectory(yandex-belts/white-belt/3-4-2)
-
-
-
-
+add_subdirectory(yandex-belts/white-belt/3-4-3)
 
 
 include(GoogleTest)
