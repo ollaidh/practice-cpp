@@ -15,6 +15,8 @@ void printFile(const std::string& path) {
 
 
 int main() {
-  printFile("/Users/maria/Documents/practice-cpp/practice-cpp/yandex-belts/white-belt/4-2-1/hello.txt");
+  const std::string inputPath = "/Users/maria/Documents/practice-cpp/practice-cpp/yandex-belts/white-belt/4-2-1/hello.txt";
+
+  printFile(inputPath);
   return 0;
 }
