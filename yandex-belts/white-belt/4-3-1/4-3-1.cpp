@@ -1,5 +1,5 @@
 #include <iostream>
-// #include <cassert>
+#include <cassert>
 using namespace std;
 
 int getSign(int a, int b) {
@@ -10,8 +10,6 @@ int getSign(int a, int b) {
 }
 
 int getGcd(int a, int b) {
-  // assert (a > 0);
-  // assert (b > 0);
   while (a != 0 and b != 0) {
     if (a > b) {
         a = a % b;
@@ -24,8 +22,6 @@ int getGcd(int a, int b) {
 }
 
 int getLcm(int a, int b) {
-  // assert (a > 0);
-  // assert (b > 0);
   int gcd = getGcd(a, b);
   return a * b / gcd;
 }
@@ -36,12 +32,14 @@ public:
     Rational()
     : m_numerator(0)
     , m_denominator(1)
+    , m_sign(1)
     {}
 
     Rational(int numerator, int denominator) {
         if (numerator == 0) {
           m_numerator = 0;
           m_denominator = 1;
+          m_sign = 1;
         } else {
           m_sign = getSign(numerator, denominator);
           numerator = abs(numerator);
@@ -54,7 +52,7 @@ public:
     }
 
     int Numerator() const {
-        return m_numerator * m_sign;
+        return m_numerator;
     }
 
     int Denominator() const {
@@ -77,6 +75,12 @@ bool operator==(const Rational& lhs, const Rational& rhs) {
 }
 
 Rational operator+(const Rational& lhs, const Rational& rhs) {
+    if (lhs.Numerator() == 0 && rhs.Denominator() == 0) {
+      return {0, 1};
+    }
+    if (lhs.Denominator() == rhs.Denominator()) {
+      return Rational{(lhs.Sign() * lhs.Numerator() + rhs.Sign() * rhs.Numerator()), lhs.Denominator()};
+    }
     int lcm = getLcm(lhs.Denominator(), rhs.Denominator());
     int lhsAddMult = lcm / lhs.Denominator();
     int rhsAddMult = lcm / rhs.Denominator();
@@ -87,6 +91,9 @@ Rational operator+(const Rational& lhs, const Rational& rhs) {
 }
 
 Rational operator-(const Rational& lhs, const Rational& rhs) {
+    if (lhs.Numerator() == 0 && rhs.Numerator() == 0) {
+      return {0, 1};
+    }
     int lcm = getLcm(lhs.Denominator(), rhs.Denominator());
     int lhsAddMult = lcm / lhs.Denominator();
     int rhsAddMult = lcm / rhs.Denominator();
@@ -97,54 +104,6 @@ Rational operator-(const Rational& lhs, const Rational& rhs) {
 }
 
 int main() {
-    // {
-    //     const Rational r(3, 10);
-    //     if (r.Numerator() != 3 || r.Denominator() != 10) {
-    //         cout << "Rational(3, 10) != 3/10" << endl;
-    //         return 1;
-    //     }
-    // }
-
-    // {
-    //     const Rational r(8, 12);
-    //     if (r.Numerator() != 2 || r.Denominator() != 3) {
-    //         cout << "Rational(8, 12) != 2/3" << endl;
-    //         return 2;
-    //     }
-    // }
-
-    // {
-    //     const Rational r(-4, 6);
-    //     if (r.Numerator() != -2 || r.Denominator() != 3) {
-    //         cout << "Rational(-4, 6) != -2/3" << endl;
-    //         return 3;
-    //     }
-    // }
-
-    // {
-    //     const Rational r(4, -6);
-    //     if (r.Numerator() != -2 || r.Denominator() != 3) {
-    //         cout << "Rational(4, -6) != -2/3" << endl;
-    //         return 3;
-    //     }
-    // }
-
-    // {
-    //     const Rational r(0, 15);
-    //     if (r.Numerator() != 0 || r.Denominator() != 1) {
-    //         cout << "Rational(0, 15) != 0/1" << endl;
-    //         return 4;
-    //     }
-    // }
-
-    // {
-    //     const Rational defaultConstructed;
-    //     if (defaultConstructed.Numerator() != 0 || defaultConstructed.Denominator() != 1) {
-    //         cout << "Rational() != 0/1" << endl;
-    //         return 5;
-    //     }
-    // }
-
     {
         Rational r1(4, 6);
         Rational r2(2, 3);
