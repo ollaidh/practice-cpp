@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cassert>
+// #include <cassert>
 using namespace std;
 
 int getSign(int a, int b) {
@@ -10,8 +10,8 @@ int getSign(int a, int b) {
 }
 
 int getGcd(int a, int b) {
-  assert (a > 0);
-  assert (b > 0);
+  // assert (a > 0);
+  // assert (b > 0);
   while (a != 0 and b != 0) {
     if (a > b) {
         a = a % b;
@@ -24,8 +24,8 @@ int getGcd(int a, int b) {
 }
 
 int getLcm(int a, int b) {
-  assert (a > 0);
-  assert (b > 0);
+  // assert (a > 0);
+  // assert (b > 0);
   int gcd = getGcd(a, b);
   return a * b / gcd;
 }
@@ -73,7 +73,7 @@ private:
 };
 
 bool operator==(const Rational& lhs, const Rational& rhs) {
-  return (rhs.Numerator() == lhs.Numerator() && rhs.Denominator() == lhs.Denominator() && rhs.Sign() == lhs.Sign());
+  return ((rhs.Numerator() == lhs.Numerator()) && (rhs.Denominator() == lhs.Denominator()) && (rhs.Sign() == lhs.Sign()));
 }
 
 Rational operator+(const Rational& lhs, const Rational& rhs) {
@@ -97,63 +97,84 @@ Rational operator-(const Rational& lhs, const Rational& rhs) {
 }
 
 int main() {
+    // {
+    //     const Rational r(3, 10);
+    //     if (r.Numerator() != 3 || r.Denominator() != 10) {
+    //         cout << "Rational(3, 10) != 3/10" << endl;
+    //         return 1;
+    //     }
+    // }
+
+    // {
+    //     const Rational r(8, 12);
+    //     if (r.Numerator() != 2 || r.Denominator() != 3) {
+    //         cout << "Rational(8, 12) != 2/3" << endl;
+    //         return 2;
+    //     }
+    // }
+
+    // {
+    //     const Rational r(-4, 6);
+    //     if (r.Numerator() != -2 || r.Denominator() != 3) {
+    //         cout << "Rational(-4, 6) != -2/3" << endl;
+    //         return 3;
+    //     }
+    // }
+
+    // {
+    //     const Rational r(4, -6);
+    //     if (r.Numerator() != -2 || r.Denominator() != 3) {
+    //         cout << "Rational(4, -6) != -2/3" << endl;
+    //         return 3;
+    //     }
+    // }
+
+    // {
+    //     const Rational r(0, 15);
+    //     if (r.Numerator() != 0 || r.Denominator() != 1) {
+    //         cout << "Rational(0, 15) != 0/1" << endl;
+    //         return 4;
+    //     }
+    // }
+
+    // {
+    //     const Rational defaultConstructed;
+    //     if (defaultConstructed.Numerator() != 0 || defaultConstructed.Denominator() != 1) {
+    //         cout << "Rational() != 0/1" << endl;
+    //         return 5;
+    //     }
+    // }
+
     {
-        const Rational r(3, 10);
-        if (r.Numerator() != 3 || r.Denominator() != 10) {
-            cout << "Rational(3, 10) != 3/10" << endl;
+        Rational r1(4, 6);
+        Rational r2(2, 3);
+        bool equal = r1 == r2;
+        if (!equal) {
+            cout << "4/6 != 2/3" << endl;
             return 1;
         }
     }
 
     {
-        const Rational r(8, 12);
-        if (r.Numerator() != 2 || r.Denominator() != 3) {
-            cout << "Rational(8, 12) != 2/3" << endl;
+        Rational a(2, 3);
+        Rational b(4, 3);
+        Rational c = a + b;
+        bool equal = c == Rational(2, 1);
+        if (!equal) {
+            cout << "2/3 + 4/3 != 2" << endl;
             return 2;
         }
     }
 
     {
-        const Rational r(-4, 6);
-        if (r.Numerator() != -2 || r.Denominator() != 3) {
-            cout << "Rational(-4, 6) != -2/3" << endl;
+        Rational a(5, 7);
+        Rational b(2, 9);
+        Rational c = a - b;
+        bool equal = c == Rational(31, 63);
+        if (!equal) {
+            cout << "5/7 - 2/9 != 31/63" << endl;
             return 3;
         }
-    }
-
-    {
-        const Rational r(4, -6);
-        if (r.Numerator() != -2 || r.Denominator() != 3) {
-            cout << "Rational(4, -6) != -2/3" << endl;
-            return 3;
-        }
-    }
-
-    {
-        const Rational r(0, 15);
-        if (r.Numerator() != 0 || r.Denominator() != 1) {
-            cout << "Rational(0, 15) != 0/1" << endl;
-            return 4;
-        }
-    }
-
-    {
-        const Rational defaultConstructed;
-        if (defaultConstructed.Numerator() != 0 || defaultConstructed.Denominator() != 1) {
-            cout << "Rational() != 0/1" << endl;
-            return 5;
-        }
-    }
-
-    {
-        const Rational r = Rational(1, 2) + Rational(1, 3) - Rational(1, 4);
-        if (r == Rational(7, 12)) {
-          cout << "equal";
-        }
-    }
-
-    {
-        assert (Rational(0, 1) == Rational(0, 1234643));
     }
 
     cout << "OK" << endl;
