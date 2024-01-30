@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 using namespace std;
 
 int getSign(int a, int b) {
@@ -9,8 +10,8 @@ int getSign(int a, int b) {
 }
 
 int getGcd(int a, int b) {
-  a = abs(a);
-  b = abs(b);
+  assert (a > 0);
+  assert (b > 0);
   while (a != 0 and b != 0) {
     if (a > b) {
         a = a % b;
@@ -20,6 +21,13 @@ int getGcd(int a, int b) {
     }
   }
   return (a + b);
+}
+
+int getLcm(int a, int b) {
+  assert (a > 0);
+  assert (b > 0);
+  int gcd = getGcd(a, b);
+  return a * b / gcd;
 }
 
 
@@ -36,9 +44,11 @@ public:
           m_denominator = 1;
         } else {
           m_sign = getSign(numerator, denominator);
+          numerator = abs(numerator);
+          denominator = abs(denominator);
           int gcd = getGcd(numerator, denominator);
-          m_numerator = abs(numerator) / gcd;
-          m_denominator = abs(denominator) / gcd;
+          m_numerator = numerator / gcd;
+          m_denominator = denominator / gcd;
         }
 
     }
@@ -51,6 +61,10 @@ public:
         return m_denominator;
     }
 
+    int Sign() const {
+        return m_sign;
+    }
+
 private:
     int m_numerator;
     int m_denominator;
@@ -59,12 +73,28 @@ private:
 };
 
 bool operator==(const Rational& lhs, const Rational& rhs) {
-  return (rhs.Numerator() == lhs.Numerator() && rhs.Denominator() == lhs.Denominator());
+  return (rhs.Numerator() == lhs.Numerator() && rhs.Denominator() == lhs.Denominator() && rhs.Sign() == lhs.Sign());
 }
 
-// Rational operator+(const Rational& lhs, const Rational& rhs) {
-//     int nu
-// }
+Rational operator+(const Rational& lhs, const Rational& rhs) {
+    int lcm = getLcm(lhs.Denominator(), rhs.Denominator());
+    int lhsAddMult = lcm / lhs.Denominator();
+    int rhsAddMult = lcm / rhs.Denominator();
+    int newDenominator = lcm;
+    int newNumerator = lhs.Sign() * lhs.Numerator() * lhsAddMult + rhs.Sign() * rhs.Numerator() * rhsAddMult;
+    return Rational{newNumerator, newDenominator};
+
+}
+
+Rational operator-(const Rational& lhs, const Rational& rhs) {
+    int lcm = getLcm(lhs.Denominator(), rhs.Denominator());
+    int lhsAddMult = lcm / lhs.Denominator();
+    int rhsAddMult = lcm / rhs.Denominator();
+    int newDenominator = lcm;
+    int newNumerator = lhs.Sign() * lhs.Numerator() * lhsAddMult - rhs.Sign() * rhs.Numerator() * rhsAddMult;
+    return Rational{newNumerator, newDenominator};
+
+}
 
 int main() {
     {
@@ -113,6 +143,17 @@ int main() {
             cout << "Rational() != 0/1" << endl;
             return 5;
         }
+    }
+
+    {
+        const Rational r = Rational(1, 2) + Rational(1, 3) - Rational(1, 4);
+        if (r == Rational(7, 12)) {
+          cout << "equal";
+        }
+    }
+
+    {
+        assert (Rational(0, 1) == Rational(0, 1234643));
     }
 
     cout << "OK" << endl;
