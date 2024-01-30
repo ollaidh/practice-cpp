@@ -88,15 +88,8 @@ Rational operator+(const Rational& lhs, const Rational& rhs) {
 }
 
 Rational operator-(const Rational& lhs, const Rational& rhs) {
-    if (lhs.Numerator() == 0 && rhs.Numerator() == 0) {
-      return {0, 1};
-    }
-    int lcm = getLcm(lhs.Denominator(), rhs.Denominator());
-    int lhsAddMult = lcm / lhs.Denominator();
-    int rhsAddMult = lcm / rhs.Denominator();
-    int newDenominator = lcm;
-    int newNumerator = lhs.Sign() * lhs.Numerator() * lhsAddMult - rhs.Sign() * rhs.Numerator() * rhsAddMult;
-    return Rational{newNumerator, newDenominator};
+    Rational newRhs{rhs.Numerator() * rhs.Sign() * (-1), rhs.Denominator()};
+    return lhs + newRhs;
 
 }
 
@@ -131,6 +124,13 @@ int main() {
             cout << "5/7 - 2/9 != 31/63" << endl;
             return 3;
         }
+    }
+
+    {
+      Rational lhs = Rational(10, 11);
+      Rational rhs = Rational(-8, 11);
+      Rational result = lhs - rhs;
+      assert (Rational(10, 11) - Rational(-8, 11) == Rational(18, 11));
     }
 
     cout << "OK" << endl;
