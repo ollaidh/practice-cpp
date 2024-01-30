@@ -78,9 +78,6 @@ Rational operator+(const Rational& lhs, const Rational& rhs) {
     if (lhs.Numerator() == 0 && rhs.Denominator() == 0) {
       return {0, 1};
     }
-    if (lhs.Denominator() == rhs.Denominator()) {
-      return Rational{(lhs.Sign() * lhs.Numerator() + rhs.Sign() * rhs.Numerator()), lhs.Denominator()};
-    }
     int lcm = getLcm(lhs.Denominator(), rhs.Denominator());
     int lhsAddMult = lcm / lhs.Denominator();
     int rhsAddMult = lcm / rhs.Denominator();
