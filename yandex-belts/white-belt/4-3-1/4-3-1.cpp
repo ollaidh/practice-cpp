@@ -93,44 +93,37 @@ Rational operator-(const Rational& lhs, const Rational& rhs) {
 
 }
 
+Rational operator*(const Rational& lhs, const Rational& rhs) {
+    return Rational(lhs.Sign() * rhs.Sign() * lhs.Numerator() * rhs.Numerator(), lhs.Denominator() * rhs.Denominator());
+
+}
+
+Rational operator/(const Rational& lhs, const Rational& rhs) {
+    Rational newRhs(rhs.Sign() * rhs.Denominator(), rhs.Numerator());
+    return lhs * newRhs;
+}
+
 int main() {
     {
-        Rational r1(4, 6);
-        Rational r2(2, 3);
-        bool equal = r1 == r2;
+        Rational a(2, 3);
+        Rational b(4, 3);
+        Rational c = a * b;
+        bool equal = c == Rational(8, 9);
         if (!equal) {
-            cout << "4/6 != 2/3" << endl;
+            cout << "2/3 * 4/3 != 8/9" << endl;
             return 1;
         }
     }
 
     {
-        Rational a(2, 3);
-        Rational b(4, 3);
-        Rational c = a + b;
-        bool equal = c == Rational(2, 1);
+        Rational a(5, 4);
+        Rational b(15, 8);
+        Rational c = a / b;
+        bool equal = c == Rational(2, 3);
         if (!equal) {
-            cout << "2/3 + 4/3 != 2" << endl;
+            cout << "5/4 / 15/8 != 2/3" << endl;
             return 2;
         }
-    }
-
-    {
-        Rational a(5, 7);
-        Rational b(2, 9);
-        Rational c = a - b;
-        bool equal = c == Rational(31, 63);
-        if (!equal) {
-            cout << "5/7 - 2/9 != 31/63" << endl;
-            return 3;
-        }
-    }
-
-    {
-      Rational lhs = Rational(10, 11);
-      Rational rhs = Rational(-8, 11);
-      Rational result = lhs - rhs;
-      assert (Rational(10, 11) - Rational(-8, 11) == Rational(18, 11));
     }
 
     cout << "OK" << endl;
