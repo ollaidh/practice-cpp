@@ -1,6 +1,13 @@
 #include <iostream>
 using namespace std;
 
+int getSign(int a, int b) {
+  if ((a < 0 && b > 0) || (a > 0 && b < 0)) {
+    return -1;
+  }
+  return 1;
+}
+
 int getGcd(int a, int b) {
   a = abs(a);
   b = abs(b);
@@ -15,6 +22,7 @@ int getGcd(int a, int b) {
   return (a + b);
 }
 
+
 class Rational {
 public:
     Rational()
@@ -27,23 +35,16 @@ public:
           m_numerator = 0;
           m_denominator = 1;
         } else {
-          if (numerator < 0 && denominator < 0) {
-            numerator = abs(numerator);
-            denominator = abs(denominator);
-          } else if (denominator < 0 && numerator > 0) {
-            numerator *= -1;
-            denominator = abs(denominator);
-          }
-
+          m_sign = getSign(numerator, denominator);
           int gcd = getGcd(numerator, denominator);
-          m_numerator = numerator / gcd;
-          m_denominator = denominator / gcd;
+          m_numerator = abs(numerator) / gcd;
+          m_denominator = abs(denominator) / gcd;
         }
 
     }
 
     int Numerator() const {
-        return m_numerator;
+        return m_numerator * m_sign;
     }
 
     int Denominator() const {
@@ -53,9 +54,17 @@ public:
 private:
     int m_numerator;
     int m_denominator;
-
+    int m_sign;
 
 };
+
+bool operator==(const Rational& lhs, const Rational& rhs) {
+  return (rhs.Numerator() == lhs.Numerator() && rhs.Denominator() == lhs.Denominator());
+}
+
+// Rational operator+(const Rational& lhs, const Rational& rhs) {
+//     int nu
+// }
 
 int main() {
     {
