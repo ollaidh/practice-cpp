@@ -1,4 +1,4 @@
-#include <_types/_intmax_t.h>
+// #include <_types/_intmax_t.h>
 #include <exception>
 #include <iostream>
 #include <cassert>
@@ -124,7 +124,7 @@ Rational operator*(const Rational& lhs, const Rational& rhs) {
 
 Rational operator/(const Rational& lhs, const Rational& rhs) {
     if (rhs.Numerator() == 0) {
-      throw std::domain_error("Divizion by zero");
+      throw std::domain_error("Division by zero");
     }
     Rational newRhs(rhs.Sign() * rhs.Denominator(), rhs.Numerator());
     return lhs * newRhs;
@@ -180,8 +180,8 @@ public:
     }
     try {
       return m_fractionLhs / m_fractionRhs;
-    } catch (exception& ex) {
-      throw ex.what();
+    } catch (std::invalid_argument& ex) {
+      throw std::invalid_argument(ex.what());
     }
   }
 private:
@@ -205,11 +205,6 @@ StandardFractionCalculator parseCalculatorParameters(stringstream& ss) {
   ss >> numerator2;
   ss.ignore(1);
   ss >> denominator2;
-  // std::cout << numerator1 << " ";
-  // std::cout << denominator1 << " ";
-  // std::cout << numerator2 << " ";
-  // std::cout << denominator2 << " ";
-
   if (denominator1 == 0 || denominator2 == 0) {
     throw std::invalid_argument("Invalid argument");
   }
@@ -220,13 +215,34 @@ StandardFractionCalculator parseCalculatorParameters(stringstream& ss) {
 };
 
 int main() {
-  std::stringstream ss{"13/5 / 0/3"};
+  int numerator1;
+  int numerator2;
+  int denominator1;
+  int denominator2;
+  std::string sign;
+  std::cin >> numerator1;
+  std::cin.ignore(1);
+  std::cin >> denominator1;
+  std::cin >> sign;
+  std::cin >> numerator2;
+  std::cin.ignore(1);
+  std::cin >> denominator2;
+
+  // std::cout << numerator1 << " ";
+  // std::cout << denominator1 << " ";
+  // std::cout << sign << " ";
+  // std::cout << numerator2 << " ";
+  // std::cout << denominator2 << " ";
+
+
   try {
-        StandardFractionCalculator calc = parseCalculatorParameters(ss);
+        StandardFractionCalculator calc{Rational{numerator1, denominator1},
+                                        Rational{numerator2, denominator2},
+                                        sign};
         std::cout << calc.calculate();
 
   } catch (exception& ex) {
-    std::cout << ex.what();
+    std::cout << ex.what() << std::endl;
   }
   return 0;
 }
