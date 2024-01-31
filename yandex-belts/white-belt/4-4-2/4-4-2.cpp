@@ -191,29 +191,6 @@ private:
 
 };
 
-StandardFractionCalculator parseCalculatorParameters(stringstream& ss) {
-  int numerator1;
-  int numerator2;
-  int denominator1;
-  int denominator2;
-  std::string sign;
-  ss >> numerator1;
-  ss.ignore(1);
-  ss >> denominator1;
-  ss.ignore(1);
-  ss >> sign;
-  ss >> numerator2;
-  ss.ignore(1);
-  ss >> denominator2;
-  if (denominator1 == 0 || denominator2 == 0) {
-    throw std::invalid_argument("Invalid argument");
-  }
-  return StandardFractionCalculator{Rational{numerator1, denominator1},
-          Rational{numerator2, denominator2},
-            sign};
-
-};
-
 int main() {
   int numerator1;
   int numerator2;
@@ -227,13 +204,6 @@ int main() {
   std::cin >> numerator2;
   std::cin.ignore(1);
   std::cin >> denominator2;
-
-  // std::cout << numerator1 << " ";
-  // std::cout << denominator1 << " ";
-  // std::cout << sign << " ";
-  // std::cout << numerator2 << " ";
-  // std::cout << denominator2 << " ";
-
 
   try {
         StandardFractionCalculator calc{Rational{numerator1, denominator1},
