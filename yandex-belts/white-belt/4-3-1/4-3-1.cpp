@@ -4,6 +4,7 @@
 #include <sstream>
 #include <set>
 #include <map>
+#include <stdexcept>
 
 using namespace std;
 
@@ -41,6 +42,9 @@ public:
     {}
 
     Rational(int numerator, int denominator) {
+        if (denominator == 0) {
+          throw std::invalid_argument("Zero denominator!");
+        }
         if (numerator == 0) {
           m_numerator = 0;
           m_denominator = 1;
@@ -116,6 +120,9 @@ Rational operator*(const Rational& lhs, const Rational& rhs) {
 }
 
 Rational operator/(const Rational& lhs, const Rational& rhs) {
+    if (rhs.Numerator() == 0) {
+      throw std::domain_error("Divizion by zero!");
+    }
     Rational newRhs(rhs.Sign() * rhs.Denominator(), rhs.Numerator());
     return lhs * newRhs;
 }
@@ -152,34 +159,18 @@ bool operator<(const Rational& lhs, const Rational& rhs) {
 }
 
 int main() {
-    {
-        const set<Rational> rs = {{1, 2}, {1, 25}, {3, 4}, {3, 4}, {1, 2}};
-        if (rs.size() != 3) {
-            cout << "Wrong amount of items in the set" << endl;
-            return 1;
-        }
-
-        vector<Rational> v;
-        for (auto x : rs) {
-            v.push_back(x);
-        }
-        if (v != vector<Rational>{{1, 25}, {1, 2}, {3, 4}}) {
-            cout << "Rationals comparison works incorrectly" << endl;
-            return 2;
-        }
+    try {
+        Rational r(1, 0);
+        cout << "Doesn't throw in case of zero denominator" << endl;
+        return 1;
+    } catch (invalid_argument&) {
     }
 
-    {
-        map<Rational, int> count;
-        ++count[{1, 2}];
-        ++count[{1, 2}];
-
-        ++count[{2, 3}];
-
-        if (count.size() != 2) {
-            cout << "Wrong amount of items in the map" << endl;
-            return 3;
-        }
+    try {
+        auto x = Rational(1, 2) / Rational(0, 1);
+        cout << "Doesn't throw in case of division by zero" << endl;
+        return 2;
+    } catch (domain_error&) {
     }
 
     cout << "OK" << endl;
