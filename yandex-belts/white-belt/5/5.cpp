@@ -140,6 +140,9 @@ int main() {
 
   while (std::getline(std::cin, input)) {
     Command command = parseCommand(input);
+    if (command.command.size() == 0) {
+      continue;
+    }
     if (!validCommands.contains(command.command)) {
       std::cout << "Unknown command: " << command.command << "\n";
       continue;
