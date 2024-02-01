@@ -116,7 +116,9 @@ public:
   }
 
   bool DeleteEvent(const Date& date, const std::string& event) {
-    if (m_db.contains(date) && m_db[date].contains(event)) {
+    auto itDate = m_db.find(date);
+    auto itEvent = itDate->second.find(event);
+    if (itDate != m_db.end() && itEvent != itDate->second.end()) {
       m_db[date].erase(event);
       if (m_db[date].size() == 0) {
         m_db.erase(date);
@@ -128,18 +130,20 @@ public:
 
   int DeleteDate(const Date& date) {
       int nDelEvents = 0;
-      if (m_db.contains(date)) {
-        nDelEvents = m_db[date].size();
+      auto it = m_db.find(date);
+      if (it != m_db.end()) {
+        nDelEvents = it->second.size();
         m_db.erase(date);
       }
       return nDelEvents;
   }
 
   std::set<std::string> Find(const Date& date) const {
-    if (m_db.contains(date)) {
-      return m_db.at(date);
+    auto it = m_db.find(date);
+    if (it != m_db.end()) {
+      return it->second;
     }
-    return std::set<std::string>{};
+    return {};
   }
 
   void Print() const {
@@ -183,7 +187,7 @@ int main() {
       if (command.command.size() == 0) {
         continue;
       }
-      if (!validCommands.contains(command.command)) {
+      if (validCommands.find(command.command) == validCommands.end()) {
         std::cout << "Unknown command: " << command.command << "\n";
         continue;
       }
