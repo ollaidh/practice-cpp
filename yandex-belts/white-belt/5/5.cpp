@@ -1,5 +1,6 @@
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <exception>
 #include <ostream>
 #include <string>
@@ -9,7 +10,7 @@
 
 class Date {
 public:
-  Date(){};
+  Date() : Date(0, 0, 0) {};
 
   Date(int year, int month, int day)
   : m_year(year)
@@ -115,42 +116,53 @@ private:
   std::map<Date, std::set<std::string>> m_db;
 };
 
+struct Command {
+  std::string command;
+  Date date;
+  std::string event;
+};
+
+Command parseCommand(std::string& input) {
+  Command command;
+  std::stringstream ss{std::move(input)};
+  ss >> command.command;
+  ss >> command.date;
+  ss >> command.event;
+  return command;
+}
+
+
 int main() {
   Database db;
 
   std::set<std::string> validCommands{"Add", "Del", "Find", "Print"};
+  std::string input;
 
-  std::string command;
-  Date date;
-  std::string event;
-
-  while (std::cin >> command) {
-    if (!validCommands.contains(command)) {
-      std::cout << "Unknown command: " << command << "\n";
+  while (std::getline(std::cin, input)) {
+    Command command = parseCommand(input);
+    if (!validCommands.contains(command.command)) {
+      std::cout << "Unknown command: " << command.command << "\n";
       continue;
     }
-    std::cin >> date;
 
-    std::cin >> event;
-
-    if (command == "Add") {
-      db.AddEvent(date, event);
-    } else if (command == "Del") {
-      if (event.size() == 0) {
-        if (db.DeleteDate(date)) {
+    if (command.command == "Add") {
+      db.AddEvent(command.date, command.event);
+    } else if (command.command == "Del") {
+      if (command.event.size() != 0) {
+        if (db.DeleteEvent(command.date, command.event)) {
           std::cout << "Deleted successfully" << "\n";
         } else {
           std::cout << "Event not found" << "\n";
         }
       } else {
-        std::cout << "Deleted " << db.DeleteEvent(date, event) << " events" << "\n";
+        std::cout << "Deleted " << db.DeleteDate(command.date) << " events" << "\n";
       }
-    } else if (command == "Find") {
-      auto events = db.Find(date);
+    } else if (command.command == "Find") {
+      auto events = db.Find(command.date);
       for (auto ev : events) {
         std::cout << ev << "\n";
       }
-    } else if (command == "Print") {
+    } else if (command.command == "Print") {
       db.Print();
     }
 
