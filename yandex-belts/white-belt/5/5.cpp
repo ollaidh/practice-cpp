@@ -8,16 +8,36 @@
 #include <set>
 #include <map>
 
+bool isValidDay(int day)
+{
+    return day > 0 && day < 32;
+}
+
+bool isValidMonth(int month)
+{
+    return month > 0 && month < 13;
+}
 
 class Date {
 public:
-  Date() : Date(0, 0, 0) {};
+    Date()
+    {
+        m_year = 0;
+        m_month = 0;
+        m_day = 0;
+    }
 
-  Date(int year, int month, int day)
-  : m_year(year)
-  , m_month(month)
-  , m_day(day)
-  {}
+    Date(int year, int month, int day) : Date()
+    {
+        if (isValidMonth(month) == false)
+            throw std::invalid_argument("Month value is invalid: " + std::to_string(month));
+        if (isValidDay(day) == false)
+            throw std::invalid_argument("Day value is invalid: " + std::to_string(day));
+        m_year = year;
+        m_month = month;
+        m_day = day;
+    }
+
   int GetYear() const {
     return m_year;
   }
