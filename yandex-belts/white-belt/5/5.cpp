@@ -3,6 +3,7 @@
 #include <sstream>
 #include <exception>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <set>
 #include <map>
@@ -44,16 +45,34 @@ bool operator<(const Date& lhs, const Date& rhs) {
 }
 
 std::istream& operator>>(std::istream& stream, Date& date) {
-  int year;
-  int month;
-  int day;
-  stream >> year;
-  stream.ignore(1);
-  stream >> month;
-  stream.ignore(1);
-  stream >> year;
-  date = Date(year, month, day);
-  return stream;
+  std::string line;
+    std::istringstream sstream;
+    stream >> line;
+    sstream.str(line);
+
+    int year, month, day;
+
+    if (!(sstream >> year))
+        throw std::runtime_error("Wrong date format: " + line);
+
+    if (sstream.peek() != '-')
+        throw std::runtime_error("Wrong date format: " + line);
+    sstream.ignore(1);
+
+    if (!(sstream >> month))
+        throw std::runtime_error("Wrong date format: " + line);
+    if (sstream.peek() != '-')
+        throw std::runtime_error("Wrong date format: " + line);
+    sstream.ignore(1);
+
+    if (!(sstream >> day))
+        throw std::runtime_error("Wrong date format: " + line);
+    if (sstream.peek() != EOF)
+        throw std::runtime_error("Wrong date format: " + line);
+
+    date = Date(year, month, day);
+
+    return stream;
 }
 
 
@@ -139,35 +158,41 @@ int main() {
   std::string input;
 
   while (std::getline(std::cin, input)) {
-    Command command = parseCommand(input);
-    if (command.command.size() == 0) {
-      continue;
-    }
-    if (!validCommands.contains(command.command)) {
-      std::cout << "Unknown command: " << command.command << "\n";
+    try {
+      Command command = parseCommand(input);
+      if (command.command.size() == 0) {
+        continue;
+      }
+      if (!validCommands.contains(command.command)) {
+        std::cout << "Unknown command: " << command.command << "\n";
+        continue;
+      }
+
+      if (command.command == "Add") {
+        db.AddEvent(command.date, command.event);
+      } else if (command.command == "Del") {
+        if (command.event.size() != 0) {
+          if (db.DeleteEvent(command.date, command.event)) {
+            std::cout << "Deleted successfully" << "\n";
+          } else {
+            std::cout << "Event not found" << "\n";
+          }
+        } else {
+          std::cout << "Deleted " << db.DeleteDate(command.date) << " events" << "\n";
+        }
+      } else if (command.command == "Find") {
+        auto events = db.Find(command.date);
+        for (auto ev : events) {
+          std::cout << ev << "\n";
+        }
+      } else if (command.command == "Print") {
+        db.Print();
+      }
+    } catch (std::exception& ex) {
+      std::cout << ex.what() << "\n";
       continue;
     }
 
-    if (command.command == "Add") {
-      db.AddEvent(command.date, command.event);
-    } else if (command.command == "Del") {
-      if (command.event.size() != 0) {
-        if (db.DeleteEvent(command.date, command.event)) {
-          std::cout << "Deleted successfully" << "\n";
-        } else {
-          std::cout << "Event not found" << "\n";
-        }
-      } else {
-        std::cout << "Deleted " << db.DeleteDate(command.date) << " events" << "\n";
-      }
-    } else if (command.command == "Find") {
-      auto events = db.Find(command.date);
-      for (auto ev : events) {
-        std::cout << ev << "\n";
-      }
-    } else if (command.command == "Print") {
-      db.Print();
-    }
 
 
 
