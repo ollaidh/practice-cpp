@@ -1,5 +1,6 @@
 #include <iomanip>
 #include <iostream>
+#include <istream>
 #include <sstream>
 #include <exception>
 #include <ostream>
@@ -117,14 +118,17 @@ public:
 
   bool DeleteEvent(const Date& date, const std::string& event) {
     auto itDate = m_db.find(date);
-    auto itEvent = itDate->second.find(event);
-    if (itDate != m_db.end() && itEvent != itDate->second.end()) {
-      m_db[date].erase(event);
-      if (m_db[date].size() == 0) {
-        m_db.erase(date);
+    if (itDate != m_db.end()) {
+      auto itEvent = itDate->second.find(event);
+      if (itEvent != itDate->second.end()) {
+        m_db[date].erase(event);
+        if (m_db[date].size() == 0) {
+          m_db.erase(date);
+        }
+        return true;
       }
-      return true;
     }
+
     return false;
   }
 
@@ -165,12 +169,38 @@ struct Command {
   std::string event;
 };
 
+void parseAddCommand(Command& command, std::istream& stream) {
+  stream >> command.date;
+  stream >> command.event;
+}
+
+void parseDelCommand(Command& command, std::istream& stream) {
+  stream >> command.date;
+  if (stream.peek()) {
+    stream >> command.event;
+  }
+}
+
+void parseFindCommand(Command& command, std::istream& stream) {
+  stream >> command.date;
+}
+
+void parsePrintCommand(Command& command, std::istream& stream) {
+  return;
+}
+
+std::map<std::string, std::function<void(Command&, std::istream&)>> commandParsers = {
+  {"Add", parseAddCommand},
+  {"Del", parseDelCommand},
+  {"Find", parseFindCommand},
+  {"Print", parsePrintCommand},
+};
+
 Command parseCommand(std::string& input) {
   Command command;
   std::stringstream ss{std::move(input)};
   ss >> command.command;
-  ss >> command.date;
-  ss >> command.event;
+  commandParsers[command.command](command, ss);
   return command;
 }
 
@@ -182,11 +212,12 @@ int main() {
   std::string input;
 
   while (std::getline(std::cin, input)) {
+    if (input.empty()) {
+      continue;
+    }
     try {
       Command command = parseCommand(input);
-      if (command.command.size() == 0) {
-        continue;
-      }
+
       if (validCommands.find(command.command) == validCommands.end()) {
         std::cout << "Unknown command: " << command.command << "\n";
         continue;
