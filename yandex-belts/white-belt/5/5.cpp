@@ -119,42 +119,42 @@ public:
 
   bool DeleteEvent(const Date& date, const std::string& event) {
     auto itDate = m_db.find(date);
-    if (itDate != m_db.end()) {
-      auto itEvent = itDate->second.find(event);
-      if (itEvent != itDate->second.end()) {
-        itDate->second.erase(event);
-        if (itDate->second.empty()) {
-          m_db.erase(itDate);
-        }
-        return true;
-      }
+    if (itDate == m_db.end()) {
+      return false;
     }
-
-    return false;
-  }
+    auto itEvent = itDate->second.find(event);
+    if (itEvent == itDate->second.end()) {
+      return false;
+    }
+    itDate->second.erase(event);
+    if (itDate->second.empty()) {
+      m_db.erase(itDate);
+    }
+    return true;
+}
 
   int DeleteDate(const Date& date) {
-      int nDelEvents = 0;
-      auto it = m_db.find(date);
-      if (it != m_db.end()) {
-        nDelEvents = it->second.size();
-        m_db.erase(it);
-      }
-      return nDelEvents;
+    int nDelEvents = 0;
+    auto it = m_db.find(date);
+    if (it != m_db.end()) {
+      nDelEvents = it->second.size();
+      m_db.erase(it);
+    }
+    return nDelEvents;
   }
 
   std::set<std::string> Find(const Date& date) const {
     auto it = m_db.find(date);
-    if (it != m_db.end()) {
-      return it->second;
+    if (it == m_db.end()) {
+      return {};
     }
-    return {};
+    return it->second;
   }
 
   void Print() const {
     for (const auto& [key, value] : m_db) {
       for (const auto &event : value) {
-        std::cout << key << " " << event << "\n";
+        std::cout << key << " " << event << std::endl;
       }
     }
   }
@@ -220,7 +220,7 @@ int main() {
       Command command = parseCommand(input);
 
       if (validCommands.find(command.command) == validCommands.end()) {
-        std::cout << "Unknown command: " << command.command << "\n";
+        std::cout << "Unknown command: " << command.command << std::endl;
         continue;
       }
 
@@ -229,23 +229,23 @@ int main() {
       } else if (command.command == "Del") {
         if (command.event.size() != 0) {
           if (db.DeleteEvent(command.date, command.event)) {
-            std::cout << "Deleted successfully" << "\n";
+            std::cout << "Deleted successfully" << std::endl;
           } else {
-            std::cout << "Event not found" << "\n";
+            std::cout << "Event not found" << std::endl;
           }
         } else {
-          std::cout << "Deleted " << db.DeleteDate(command.date) << " events" << "\n";
+          std::cout << "Deleted " << db.DeleteDate(command.date) << " events" << std::endl;
         }
       } else if (command.command == "Find") {
         auto events = db.Find(command.date);
         for (auto ev : events) {
-          std::cout << ev << "\n";
+          std::cout << ev << std::endl;
         }
       } else if (command.command == "Print") {
         db.Print();
       }
     } catch (std::exception& ex) {
-      std::cout << ex.what() << "\n";
+      std::cout << ex.what() << std::endl;
       continue;
     }
   }
