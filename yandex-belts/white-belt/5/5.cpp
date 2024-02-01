@@ -8,6 +8,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <functional>
 
 bool isValidDay(int day)
 {
@@ -121,9 +122,9 @@ public:
     if (itDate != m_db.end()) {
       auto itEvent = itDate->second.find(event);
       if (itEvent != itDate->second.end()) {
-        m_db[date].erase(event);
-        if (m_db[date].size() == 0) {
-          m_db.erase(date);
+        itDate->second.erase(event);
+        if (itDate->second.empty()) {
+          m_db.erase(itDate);
         }
         return true;
       }
@@ -137,7 +138,7 @@ public:
       auto it = m_db.find(date);
       if (it != m_db.end()) {
         nDelEvents = it->second.size();
-        m_db.erase(date);
+        m_db.erase(it);
       }
       return nDelEvents;
   }
@@ -152,7 +153,7 @@ public:
 
   void Print() const {
     for (const auto& [key, value] : m_db) {
-      for (auto event : value) {
+      for (const auto &event : value) {
         std::cout << key << " " << event << "\n";
       }
     }
@@ -247,16 +248,6 @@ int main() {
       std::cout << ex.what() << "\n";
       continue;
     }
-
-
-
-
-
-
   }
-
-
-
-
   return 0;
 }
