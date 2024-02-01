@@ -201,7 +201,9 @@ Command parseCommand(std::string& input) {
   Command command;
   std::stringstream ss{std::move(input)};
   ss >> command.command;
-  commandParsers[command.command](command, ss);
+  if (commandParsers.find(command.command) != commandParsers.end()) {
+    commandParsers[command.command](command, ss);
+  }
   return command;
 }
 
