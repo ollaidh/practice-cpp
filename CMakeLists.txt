@@ -54,6 +54,8 @@ target_link_libraries(
         GTest::gtest_main
 )
 
+add_compile_definitions(LOCAL_RUN)
+
 add_subdirectory(yandex-belts/white-belt/1-4)
 add_subdirectory(yandex-belts/white-belt/1-5_min)
 add_subdirectory(yandex-belts/white-belt/1-5_eq)
@@ -100,6 +102,7 @@ add_subdirectory(yandex-belts/white-belt/4-4-3)
 add_subdirectory(yandex-belts/white-belt/5)
 add_subdirectory(yandex-belts/yellow-belt/1-3-1)
 add_subdirectory(yandex-belts/yellow-belt/1-3-2)
+add_subdirectory(yandex-belts/yellow-belt/1-4-1)
 
 
 
