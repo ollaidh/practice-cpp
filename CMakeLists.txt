@@ -104,6 +104,7 @@ add_subdirectory(yandex-belts/yellow-belt/1-3-1)
 add_subdirectory(yandex-belts/yellow-belt/1-3-2)
 add_subdirectory(yandex-belts/yellow-belt/1-4-1)
 add_subdirectory(yandex-belts/yellow-belt/1-4-2)
+add_subdirectory(yandex-belts/yellow-belt/1-5-1)
 
 
 
