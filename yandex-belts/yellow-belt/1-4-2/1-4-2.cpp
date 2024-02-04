@@ -27,11 +27,9 @@ std::ostream& operator<<(std::ostream& stream, const TaskStatus& date) {
   return stream;
 }
 
-
 using TasksInfo = std::map<TaskStatus, int>;
 
 #endif
-
 
 std::map<TaskStatus, int> makeNonZeroStatusCopy(const std::map<TaskStatus, int>& stats) {
   std::map<TaskStatus, int> result;
@@ -63,9 +61,10 @@ public:
     notUpdTasks[TaskStatus::DONE] = 0;
 
     for (auto& [status, count]: tasks) {
+        if (status == TaskStatus::DONE)
+          continue;
         while (tasks[status] > 0 && task_count > 0) {
             tasks[status]--;
-            tasks[tasksUpgradeLaw[status]]++;
 
             updTasks[tasksUpgradeLaw[status]]++;
             notUpdTasks[status]--;
@@ -79,12 +78,12 @@ public:
         }
     }
 
-    // std::cout << m_persons[person][TaskStatus::NEW] << " " << m_persons[person][TaskStatus::IN_PROGRESS] << " " << m_persons[person][TaskStatus::TESTING] << " " << m_persons[person][TaskStatus::DONE] << "\n";
+    for (auto status: {TaskStatus::NEW, TaskStatus::IN_PROGRESS, TaskStatus::TESTING, TaskStatus::DONE}) {
+      tasks[status] += updTasks[status];
+    }
 
-    auto newUT = makeNonZeroStatusCopy(updTasks);
-    updTasks = newUT;
-    auto newNUT = makeNonZeroStatusCopy(notUpdTasks);
-    notUpdTasks = newNUT;
+    updTasks = makeNonZeroStatusCopy(updTasks);
+    notUpdTasks = makeNonZeroStatusCopy(notUpdTasks);
 
     return std::tuple(updTasks, notUpdTasks);
   }
@@ -101,13 +100,6 @@ private:
 
 
 #ifdef LOCAL_RUN
-
-// void PrintTasksInfo(TasksInfo tasks_info) {
-//   std::cout << tasks_info[TaskStatus::NEW] << " new tasks" <<
-//       ", " << tasks_info[TaskStatus::IN_PROGRESS] << " tasks in progress" <<
-//       ", " << tasks_info[TaskStatus::TESTING] << " tasks are being tested" <<
-//       ", " << tasks_info[TaskStatus::DONE] << " tasks are done" << std::endl;
-// }
 
 void printStatusInfo(const std::map<TaskStatus, int>& status) {
   for (const auto& [status, count] : status) {
@@ -158,113 +150,7 @@ int main() {
   printStatusInfo(tasks.GetPersonTasksInfo("Jack"));  // {"IN_PROGRESS": 1, "TESTING": 1, "DONE": 1}
   std::cout << std::endl;
 
-
-
-
-
-  // for (int i = 0; i < 5; ++i) {
-  //   tasks.AddNewTask("Alice");
-  // }
-
-  // printStatusInfo(std::cout, tasks.GetPersonTasksInfo("Alice"));
-  // std::cout << "\n";
-  // TasksInfo updated_tasks, untouched_tasks;
-
-  // tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Alice", 5);
-
-  // std::cout << "[" << "{";
-  // printStatusInfo(std::cout, updated_tasks);
-  // std::cout << "} ";
-  // std::cout << "{";
-  // printStatusInfo(std::cout, untouched_tasks);
-  // std::cout << "}" << "]\n";
-
-  // tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Alice", 5);
-
-  // std::cout << "[" << "{";
-  // printStatusInfo(std::cout, updated_tasks);
-  // std::cout << "} ";
-  // std::cout << "{";
-  // printStatusInfo(std::cout, untouched_tasks);
-  // std::cout << "}" << "]\n";
-
-  // tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Alice", 1);
-
-  // std::cout << "[" << "{";
-  // printStatusInfo(std::cout, updated_tasks);
-  // std::cout << "} ";
-  // std::cout << "{";
-  // printStatusInfo(std::cout, untouched_tasks);
-  // std::cout << "}" << "]\n";
-
-  // for (int i = 0; i < 5; ++i) {
-  //   tasks.AddNewTask("Alice");
-  // }
-
-  // tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Alice", 2);
-
-
-  // std::cout << "[" << "{";
-  // printStatusInfo(std::cout, updated_tasks);
-  // std::cout << "} ";
-  // std::cout << "{";
-  // printStatusInfo(std::cout, untouched_tasks);
-  // std::cout << "}" << "]\n";
-
-  // printStatusInfo(std::cout, tasks.GetPersonTasksInfo("Alice"));
-  // std::cout << "" << "\n";
-
-
-
-
-
-
-
-// PerformPersonTasks Alice 2
-// GetPersonTasksInfo Alice
-// PerformPersonTasks Alice 4
-// GetPersonTasksInfo Alice
-
-
-
-  // tasks.AddNewTask("Ilia");
-  // for (int i = 0; i < 3; ++i) {
-  //   tasks.AddNewTask("Ivan");
-  // }
-  // std::cout << "Ilia's tasks: ";
-  // PrintTasksInfo(tasks.GetPersonTasksInfo("Ilia"));
-  // std::cout << "Ivan's tasks: ";
-  // PrintTasksInfo(tasks.GetPersonTasksInfo("Ivan"));
-
-  // TasksInfo updated_tasks, untouched_tasks;
-
-  // tie(updated_tasks, untouched_tasks) =
-  // tasks.PerformPersonTasks("Ivan", 2);
-  // std::cout << "Updated Ivan's tasks: ";
-  // PrintTasksInfo(updated_tasks);
-  // std::cout << "Untouched Ivan's tasks: ";
-  // PrintTasksInfo(untouched_tasks);
-
-  // tie(updated_tasks, untouched_tasks) =
-  //     tasks.PerformPersonTasks("Ivan", 2);
-  // std::cout << "Updated Ivan's tasks: ";
-  // PrintTasksInfo(updated_tasks);
-  // std::cout << "Untouched Ivan's tasks: ";
-  // PrintTasksInfo(untouched_tasks);
-
-  // PrintTasksInfo(tasks.GetPersonTasksInfo("Ivan"));
-
-  // for (int i = 0; i < 5; ++i) {
-  //   tasks.AddNewTask("Ivan");
-  // }
-  // PrintTasksInfo(tasks.GetPersonTasksInfo("Ivan"));
-  // tasks.PerformPersonTasks("Ivan", 2);
-  // PrintTasksInfo(tasks.GetPersonTasksInfo("Ivan"));
-
-
   return 0;
 }
-
-
 
 #endif
