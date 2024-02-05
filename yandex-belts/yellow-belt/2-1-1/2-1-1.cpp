@@ -45,7 +45,6 @@ istream& operator >> (istream& is, Query& q) {
     for (int i = 0; i < stop_count; i++) {
       std::string stop;
       is >> stop;
-      // std::cout << stop << " ";
       q.stops.push_back(std::move(stop));
     }
   } else if (q.type == QueryType::BusesForStop) {
@@ -87,6 +86,7 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
   if (r.bus.size() == 0) {
     os << "No bus";
   } else {
+    int nSteps = 0;
     for (const auto& stop : r.stopsOrder) {
       os << "Stop " << stop << ": ";
       if (r.stops.at(stop).size() == 1) {
@@ -98,7 +98,10 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
           }
         }
       }
-      os << endl;
+      if (nSteps != r.stopsOrder.size() - 1) {
+        os << endl;
+      }
+      nSteps ++;
     }
   }
   return os;
@@ -112,12 +115,17 @@ ostream& operator << (ostream& os, const AllBusesResponse& r) {
   if (r.buses.empty()) {
     os << "No buses";
   } else {
+    int nSteps = 0;
     for (const auto& [bus, stops] : r.buses) {
+      int nSteps = 0;
       os << "Bus " << bus << ": ";
       for (const string& stop : stops) {
         os << stop << " ";
       }
-      os << endl;
+      if (nSteps != r.buses.size() - 1) {
+        os << endl;
+      }
+      nSteps++;
     }
   }
   return os;
