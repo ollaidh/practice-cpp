@@ -120,13 +120,16 @@ public:
   void AddBus(const string& bus, const vector<string>& stops) {
     m_buses.push_back(bus);
     for (const auto& stop : stops ) {
-      m_stopsForBus[bus].push_back(stop);
-      m_busesForStop[stop].push_back(bus);
+      m_stopsForBus[bus].insert(stop);
+      m_busesForStop[stop].insert(bus);
     }
   }
 
   BusesForStopResponse GetBusesForStop(const string& stop) const {
-    // Реализуйте этот метод
+    BusesForStopResponse response;
+    response.stop = stop;
+    response.buses = m_busesForStop.at(stop);
+    return response;
   }
 
   StopsForBusResponse GetStopsForBus(const string& bus) const {
@@ -139,8 +142,8 @@ public:
 
 private:
   std::vector<std::string> m_buses;
-  std::map<std::string, std::vector<std::string>> m_busesForStop;
-  std::map<std::string, std::vector<std::string>> m_stopsForBus;
+  std::map<std::string, std::set<std::string>> m_busesForStop;
+  std::map<std::string, std::set<std::string>> m_stopsForBus;
 };
 
 // Не меняя тела функции main, реализуйте функции и классы выше
