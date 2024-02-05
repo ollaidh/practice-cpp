@@ -48,8 +48,12 @@ istream& operator >> (istream& is, Query& q) {
     }
   } else if (q.type == QueryType::BusesForStop) {
     is >> q.stop;
+    q.stops = {};
+    q.bus = "";
   } else if (q.type == QueryType::StopsForBus) {
     is >> q.bus;
+    q.stops = {};
+    q.stop = "";
   }
   return is;
 }
@@ -80,12 +84,12 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
   if (r.bus.size() == 0) {
     cout << "No bus";
   } else {
-    for (const auto& [stop, bus] : r.stops) {
+    for (const auto& [stop, buses] : r.stops) {
       cout << "Stop " << stop << ": ";
-      if (bus.size() == 1) {
+      if (buses.size() == 1) {
         cout << "no interchange";
       } else {
-        for (const string& other_bus : bus) {
+        for (const string& other_bus : buses) {
           if (r.bus != other_bus) {
             cout << other_bus << " ";
           }
@@ -124,6 +128,12 @@ public:
       m_stopsForBus[bus].insert(stop);
       m_busesForStop[stop].insert(bus);
     }
+    // if(bus == "272") {
+    //   for (auto st : stops) {
+    //     std::cout << st << " ";
+    //   }
+    //   std::cout << endl;
+    // }
   }
 
   BusesForStopResponse GetBusesForStop(const string& stop) const {
