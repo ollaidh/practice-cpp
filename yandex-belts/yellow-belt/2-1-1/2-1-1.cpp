@@ -40,10 +40,12 @@ istream& operator >> (istream& is, Query& q) {
     is >> q.bus;
     int stop_count;
     is >> stop_count;
+    q.stops = {};
     q.stops.reserve(stop_count);
     for (int i = 0; i < stop_count; i++) {
       std::string stop;
       is >> stop;
+      // std::cout << stop << " ";
       q.stops.push_back(std::move(stop));
     }
   } else if (q.type == QueryType::BusesForStop) {
@@ -60,7 +62,7 @@ istream& operator >> (istream& is, Query& q) {
 
 struct BusesForStopResponse {
   std::string stop;
-  std::set<std::string> buses;
+  std::vector<std::string> buses;
 };
 
 ostream& operator << (ostream& os, const BusesForStopResponse& r) {
@@ -70,51 +72,52 @@ ostream& operator << (ostream& os, const BusesForStopResponse& r) {
     for (std::string bus : r.buses) {
       os << bus << " ";
     }
-    cout << endl;
+    // os << endl;
   }
   return os;
 }
 
 struct StopsForBusResponse {
   std::string bus;
-  std::map<std::string, std::set<std::string>> stops;
+  std::vector<std::string> stopsOrder;
+  std::map<std::string, std::vector<std::string>> stops;
 };
 
 ostream& operator << (ostream& os, const StopsForBusResponse& r) {
   if (r.bus.size() == 0) {
-    cout << "No bus";
+    os << "No bus";
   } else {
-    for (const auto& [stop, buses] : r.stops) {
-      cout << "Stop " << stop << ": ";
-      if (buses.size() == 1) {
-        cout << "no interchange";
+    for (const auto& stop : r.stopsOrder) {
+      os << "Stop " << stop << ": ";
+      if (r.stops.at(stop).size() == 1) {
+        os << "no interchange";
       } else {
-        for (const string& other_bus : buses) {
+        for (const string& other_bus : r.stops.at(stop)) {
           if (r.bus != other_bus) {
-            cout << other_bus << " ";
+            os << other_bus << " ";
           }
         }
       }
-      cout << endl;
+      os << endl;
     }
   }
   return os;
 }
 
 struct AllBusesResponse {
-  std::map<std::string, std::set<std::string>> buses;
+  std::map<std::string, std::vector<std::string>> buses;
 };
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
   if (r.buses.empty()) {
-    cout << "No buses";
+    os << "No buses";
   } else {
     for (const auto& [bus, stops] : r.buses) {
-      cout << "Bus " << bus << ": ";
+      os << "Bus " << bus << ": ";
       for (const string& stop : stops) {
-        cout << stop << " ";
+        os << stop << " ";
       }
-      cout << endl;
+      os << endl;
     }
   }
   return os;
@@ -125,15 +128,9 @@ public:
   void AddBus(const string& bus, const vector<string>& stops) {
     m_buses.push_back(bus);
     for (const auto& stop : stops ) {
-      m_stopsForBus[bus].insert(stop);
-      m_busesForStop[stop].insert(bus);
+      m_stopsForBus[bus].push_back(stop);
+      m_busesForStop[stop].push_back(bus);
     }
-    // if(bus == "272") {
-    //   for (auto st : stops) {
-    //     std::cout << st << " ";
-    //   }
-    //   std::cout << endl;
-    // }
   }
 
   BusesForStopResponse GetBusesForStop(const string& stop) const {
@@ -147,9 +144,11 @@ public:
 
   StopsForBusResponse GetStopsForBus(const string& bus) const {
     StopsForBusResponse response;
+    response.stops = {};
     if (m_stopsForBus.find(bus) != m_stopsForBus.end()) {
       response.bus = bus;
       for (const auto& stop : m_stopsForBus.at(bus)) {
+        response.stopsOrder.push_back(stop);
         response.stops[stop] = m_busesForStop.at(stop);
       }
     }
@@ -158,14 +157,14 @@ public:
 
   AllBusesResponse GetAllBuses() const {
     AllBusesResponse response;
-    response.buses = m_busesForStop;
+    response.buses = m_stopsForBus;
     return response;
   }
 
 private:
   std::vector<std::string> m_buses;
-  std::map<std::string, std::set<std::string>> m_busesForStop;
-  std::map<std::string, std::set<std::string>> m_stopsForBus;
+  std::map<std::string, std::vector<std::string>> m_busesForStop;
+  std::map<std::string, std::vector<std::string>> m_stopsForBus;
 };
 
 // Не меняя тела функции main, реализуйте функции и классы выше
