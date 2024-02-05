@@ -55,15 +55,14 @@ istream& operator >> (istream& is, Query& q) {
 
 struct BusesForStopResponse {
   std::string stop;
-  std::set<int> buses;
+  std::set<std::string> buses;
 };
 
 ostream& operator << (ostream& os, const BusesForStopResponse& r) {
   if (r.stop.size() == 0) {
     os << "No stop" << endl;
   } else {
-    os << "Stop " << r.stop << ": ";
-    for (int bus: r.buses) {
+    for (std::string bus : r.buses) {
       os << bus << " ";
     }
     cout << endl;
@@ -72,20 +71,48 @@ ostream& operator << (ostream& os, const BusesForStopResponse& r) {
 }
 
 struct StopsForBusResponse {
-  // Наполните полями эту структуру
+  std::string bus;
+  std::map<std::string, std::set<std::string>> stops;
 };
 
 ostream& operator << (ostream& os, const StopsForBusResponse& r) {
-  // Реализуйте эту функцию
+  if (r.bus.size() == 0) {
+    cout << "No bus" << endl;
+  } else {
+    for (const auto& [stop, bus] : r.stops) {
+      cout << "Stop " << stop << ": ";
+      if (bus.size() == 1) {
+        cout << "no interchange";
+      } else {
+        for (const string& other_bus : bus) {
+          if (r.bus != other_bus) {
+            cout << other_bus << " ";
+          }
+        }
+      }
+      cout << endl;
+    }
+  }
   return os;
 }
 
 struct AllBusesResponse {
-  // Наполните полями эту структуру
+
+
 };
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
-  // Реализуйте эту функцию
+  if (buses_to_stops.empty()) {
+    cout << "No buses" << endl;
+  } else {
+    for (const auto& bus_item : buses_to_stops) {
+      cout << "Bus " << bus_item.first << ": ";
+      for (const string& stop : bus_item.second) {
+        cout << stop << " ";
+      }
+      cout << endl;
+    }
+  }
   return os;
 }
 
