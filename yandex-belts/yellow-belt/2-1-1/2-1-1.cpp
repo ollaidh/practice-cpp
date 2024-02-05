@@ -142,7 +142,9 @@ public:
   }
 
   AllBusesResponse GetAllBuses() const {
-    // Реализуйте этот метод
+    AllBusesResponse response;
+    response.buses = m_busesForStop;
+    return response;
   }
 
 private:
