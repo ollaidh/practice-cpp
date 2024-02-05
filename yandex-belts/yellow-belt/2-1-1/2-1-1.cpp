@@ -1,4 +1,5 @@
 #include <set>
+#include <sstream>
 #include <string>
 #include <iostream>
 #include <cassert>
@@ -32,7 +33,7 @@ struct Query {
 
 istream& operator >> (istream& is, Query& q) {
   string operation_code;
-  cin >> operation_code;
+  is >> operation_code;
   q.type = queryCodes[operation_code];
 
   if (q.type == QueryType::NewBus) {
@@ -60,7 +61,7 @@ struct BusesForStopResponse {
 
 ostream& operator << (ostream& os, const BusesForStopResponse& r) {
   if (r.stop.size() == 0) {
-    os << "No stop" << endl;
+    os << "No stop";
   } else {
     for (std::string bus : r.buses) {
       os << bus << " ";
@@ -77,7 +78,7 @@ struct StopsForBusResponse {
 
 ostream& operator << (ostream& os, const StopsForBusResponse& r) {
   if (r.bus.size() == 0) {
-    cout << "No bus" << endl;
+    cout << "No bus";
   } else {
     for (const auto& [stop, bus] : r.stops) {
       cout << "Stop " << stop << ": ";
@@ -102,7 +103,7 @@ struct AllBusesResponse {
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
   if (r.buses.empty()) {
-    cout << "No buses" << endl;
+    cout << "No buses";
   } else {
     for (const auto& [bus, stops] : r.buses) {
       cout << "Bus " << bus << ": ";
@@ -127,16 +128,20 @@ public:
 
   BusesForStopResponse GetBusesForStop(const string& stop) const {
     BusesForStopResponse response;
-    response.stop = stop;
-    response.buses = m_busesForStop.at(stop);
+    if (m_busesForStop.find(stop) != m_busesForStop.end()) {
+      response.stop = stop;
+      response.buses = m_busesForStop.at(stop);
+    }
     return response;
   }
 
   StopsForBusResponse GetStopsForBus(const string& bus) const {
     StopsForBusResponse response;
-    response.bus = bus;
-    for (const auto& stop : m_stopsForBus.at(bus)) {
-      response.stops[stop] = m_busesForStop.at(stop);
+    if (m_stopsForBus.find(bus) != m_stopsForBus.end()) {
+      response.bus = bus;
+      for (const auto& stop : m_stopsForBus.at(bus)) {
+        response.stops[stop] = m_busesForStop.at(stop);
+      }
     }
     return response;
   }
@@ -156,14 +161,18 @@ private:
 // Не меняя тела функции main, реализуйте функции и классы выше
 
 int main() {
-  int query_count;
+  int query_count = 10;
   Query q;
 
-  cin >> query_count;
+  // cin >> query_count;
+
+  std::string input = "ALL_BUSES\nBUSES_FOR_STOP Marushkino\nSTOPS_FOR_BUS 32K\nNEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo\nNEW_BUS 32K 6 Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo\nBUSES_FOR_STOP Vnukovo\nNEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo\nNEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo\nSTOPS_FOR_BUS 272\nALL_BUSES";
+
+  stringstream ss{input};
 
   BusManager bm;
   for (int i = 0; i < query_count; ++i) {
-    cin >> q;
+    ss >> q;
     switch (q.type) {
     case QueryType::NewBus:
       bm.AddBus(q.bus, q.stops);
