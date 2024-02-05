@@ -97,17 +97,16 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
 }
 
 struct AllBusesResponse {
-
-
+  std::map<std::string, std::vector<std::string>> buses;
 };
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
-  if (buses_to_stops.empty()) {
+  if (r.buses.empty()) {
     cout << "No buses" << endl;
   } else {
-    for (const auto& bus_item : buses_to_stops) {
-      cout << "Bus " << bus_item.first << ": ";
-      for (const string& stop : bus_item.second) {
+    for (const auto& [bus, stops] : r.buses) {
+      cout << "Bus " << bus << ": ";
+      for (const string& stop : stops) {
         cout << stop << " ";
       }
       cout << endl;
