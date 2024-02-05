@@ -97,7 +97,7 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
 }
 
 struct AllBusesResponse {
-  std::map<std::string, std::vector<std::string>> buses;
+  std::map<std::string, std::set<std::string>> buses;
 };
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
@@ -133,7 +133,12 @@ public:
   }
 
   StopsForBusResponse GetStopsForBus(const string& bus) const {
-    // Реализуйте этот метод
+    StopsForBusResponse response;
+    response.bus = bus;
+    for (const auto& stop : m_stopsForBus.at(bus)) {
+      response.stops[stop] = m_busesForStop.at(stop);
+    }
+    return response;
   }
 
   AllBusesResponse GetAllBuses() const {
