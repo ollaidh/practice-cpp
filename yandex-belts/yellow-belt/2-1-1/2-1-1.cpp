@@ -1,3 +1,4 @@
+#include <set>
 #include <string>
 #include <iostream>
 #include <cassert>
@@ -53,11 +54,20 @@ istream& operator >> (istream& is, Query& q) {
 }
 
 struct BusesForStopResponse {
-  // Наполните полями эту структуру
+  std::string stop;
+  std::set<int> buses;
 };
 
 ostream& operator << (ostream& os, const BusesForStopResponse& r) {
-  // Реализуйте эту функцию
+  if (r.stop.size() == 0) {
+    os << "No stop" << endl;
+  } else {
+    os << "Stop " << r.stop << ": ";
+    for (int bus: r.buses) {
+      os << bus << " ";
+    }
+    cout << endl;
+  }
   return os;
 }
 
