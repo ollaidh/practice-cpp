@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <map>
 #include <set>
@@ -132,12 +133,11 @@ private:
 
 void TestChangeNameHistory1() {
   Person person;
-  person.ChangeFirstName(1965, "Polina");
-  person.ChangeLastName(1967, "Sergeeva");
-  AssertEqual("Incognito", person.GetFullName(1900));
-  AssertEqual("Polina with unknown last name", person.GetFullName(1965));
-  AssertEqual("Polina Sergeeva", person.GetFullName(1990));
-  // AssertEqual(1, 1);
+  person.ChangeLastName(1965, "Sergeeva");
+  person.ChangeFirstName(1967, "Polina");
+  AssertEqual(person.GetFullName(1964), "Incognito");
+  AssertEqual(person.GetFullName(1966), "Sergeeva with unknown first name");
+  AssertEqual(person.GetFullName(1968), "Polina Sergeeva");
 
 }
 
@@ -145,19 +145,17 @@ void TestChangeNameHistory2() {
   Person person;
   person.ChangeFirstName(1965, "Polina");
   person.ChangeLastName(1967, "Sergeeva");
-  person.ChangeFirstName(1970, "Appolinaria");
-  AssertEqual("Polina Sergeeva", person.GetFullName(1969));
-  AssertEqual("Appolinaria Sergeeva", person.GetFullName(1970));
-}
+  AssertEqual(person.GetFullName(1964), "Incognito");
+  AssertEqual(person.GetFullName(1966), "Polina with unknown last name");
+  AssertEqual(person.GetFullName(1968), "Polina Sergeeva");
 
-void TestChangeNameHistory3() {
-  Person person;
-  person.ChangeFirstName(1965, "Polina");
-  person.ChangeLastName(1967, "Sergeeva");
   person.ChangeFirstName(1970, "Appolinaria");
+  AssertEqual(person.GetFullName(1969), "Polina Sergeeva");
+  AssertEqual(person.GetFullName(1970), "Appolinaria Sergeeva");
+
   person.ChangeLastName(1968, "Volkova");
-  AssertEqual("Polina Volkova", person.GetFullName(1969));
-  AssertEqual("Appolinaria Volkova", person.GetFullName(1970));
+  AssertEqual(person.GetFullName(1969),"Polina Volkova");
+  AssertEqual(person.GetFullName(1970),"Appolinaria Volkova");
 }
 
 
@@ -165,7 +163,6 @@ int main() {
   TestRunner runner;
 
   runner.RunTest(TestChangeNameHistory1, "TestChangeNameHistory1");
-  runner.RunTest(TestChangeNameHistory2, "TestChangeNameHistory2");
   runner.RunTest(TestChangeNameHistory2, "TestChangeNameHistory2");
 
   return 0;
