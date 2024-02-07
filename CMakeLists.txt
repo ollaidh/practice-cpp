@@ -113,6 +113,8 @@ add_subdirectory(yandex-belts/yellow-belt/2-4-3)
 add_subdirectory(yandex-belts/yellow-belt/2-4-4)
 add_subdirectory(yandex-belts/yellow-belt/3-2-1)
 add_subdirectory(yandex-belts/yellow-belt/phone_number)
+add_subdirectory(yandex-belts/yellow-belt/3-3-3)
+
 
 
 
