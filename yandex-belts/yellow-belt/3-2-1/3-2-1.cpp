@@ -19,6 +19,6 @@ void Sort(vector<int>& nums) {
   std::sort(nums.begin(), nums.end());
 }
 
-// int main() {
-//   return 0;
-// }
+int main() {
+  return 0;
+}
