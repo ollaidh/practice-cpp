@@ -7,8 +7,8 @@ set(PROJECT_SOURCES
     main.cpp
     query.cpp
     query.h
-    responces.cpp
-    responces.h
+    responses.cpp
+    responses.h
     bus_manager.cpp
     bus_manager.h
 )
