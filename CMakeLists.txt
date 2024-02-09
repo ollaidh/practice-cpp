@@ -120,6 +120,7 @@ add_subdirectory(yandex-belts/yellow-belt/4-1-3)
 add_subdirectory(yandex-belts/yellow-belt/4-2-1)
 add_subdirectory(yandex-belts/yellow-belt/4-2-2)
 add_subdirectory(yandex-belts/yellow-belt/4-2-3)
+add_subdirectory(yandex-belts/yellow-belt/4-2-4)
 
 
 
