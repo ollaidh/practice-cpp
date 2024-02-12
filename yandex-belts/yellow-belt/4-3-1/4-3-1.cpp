@@ -94,7 +94,9 @@ void testCountDaysInterval() {
   endDate = {2021, 3, 5};
   AssertEqual(7, countDaysInterval(startDate, endDate), "2021-02-27 : 2021-03-05");
 
-
+  startDate = {2020, 2, 1};
+  endDate = {2020, 2, 1};
+  AssertEqual(1, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
 }
 
 void runTests() {
