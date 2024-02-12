@@ -81,6 +81,16 @@ Date parseDate(std::string& date) {
 
 #ifdef LOCAL_RUN
 
+void testParseDate() {
+  std::string currDate = "2000-11-5";
+  Date expected = Date(2000, 11, 5);
+  Date result = parseDate(currDate);
+  AssertEqual(expected.year, result.year, "year");
+  AssertEqual(expected.month, result.month, "month");
+  AssertEqual(expected.day, result.day, "day");
+
+}
+
 void testCountDaysInterval() {
   Date startDate(2022, 12, 12);
   Date endDate(2022, 12, 16);
@@ -102,6 +112,8 @@ void testCountDaysInterval() {
 void runTests() {
   TestRunner tr;
   tr.RunTest(testCountDaysInterval, "testCountDaysInterval function");
+  tr.RunTest(testParseDate, "testParseDate function");
+
 }
 
 #endif
