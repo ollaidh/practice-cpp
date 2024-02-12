@@ -24,18 +24,18 @@ struct Date {
   int day;
 };
 
-int countDaysDifference(Date startDate, Date endDate) {
-    struct std::tm start = {0, 0, 0, startDate.day, startDate.month, startDate.year - 1900};  // Starts from 01-01-2000
-    struct std::tm end = {0, 0, 0, endDate.day, endDate.month, endDate.year - 1900}; /* July 5, 2004 */
+int countDaysInterval(Date startDate, Date endDate) {
+    struct std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1900};
+    struct std::tm end = {0, 0, 0, endDate.day, endDate.month - 1, endDate.year - 1900};
     std::time_t x = std::mktime(&start);
     std::time_t y = std::mktime(&end);
-    int difference = std::difftime(y, x) / (60 * 60 * 24) + 1;
-    return difference;
+    int interval = std::difftime(y, x) / (60 * 60 * 24) + 1;
+    return interval;
 }
 
 int dateToIndex(Date date) {
   Date startDate(2000, 1, 1);
-  return countDaysDifference(startDate, date);
+  return countDaysInterval(startDate, date);
 }
 
 class Budget {
@@ -43,7 +43,7 @@ public:
   Budget() : m_earnings(365, 0){}
 
   void earn(const Date& startDate, const Date& endDate, double amount) {
-    int periodDays = countDaysDifference(startDate, endDate);
+    int periodDays = countDaysInterval(startDate, endDate);
     double dailyIncome = amount / periodDays;
 
     for (int i = dateToIndex(startDate); i <= dateToIndex(endDate); i++) {
@@ -81,13 +81,25 @@ Date parseDate(std::string& date) {
 
 #ifdef LOCAL_RUN
 
-void testTest() {
-  AssertEqual(1, 1, "test");
+void testCountDaysInterval() {
+  Date startDate(2022, 12, 12);
+  Date endDate(2022, 12, 16);
+  AssertEqual(5, countDaysInterval(startDate, endDate), "2022-12-12 : 2022-12-16");
+
+  startDate = {2020, 2, 27};
+  endDate = {2020, 3, 5};
+  AssertEqual(8, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
+
+  startDate = {2021, 2, 27};
+  endDate = {2021, 3, 5};
+  AssertEqual(7, countDaysInterval(startDate, endDate), "2021-02-27 : 2021-03-05");
+
+
 }
 
 void runTests() {
   TestRunner tr;
-  tr.RunTest(testTest, "justTest");
+  tr.RunTest(testCountDaysInterval, "testCountDaysInterval function");
 }
 
 #endif
