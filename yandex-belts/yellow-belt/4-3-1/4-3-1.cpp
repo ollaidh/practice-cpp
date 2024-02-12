@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <numeric>
 #include <vector>
 #include <string>
 
@@ -37,32 +38,45 @@ public:
     int periodDays = coundDaysDifference(startDate, endDate);
     double dailyIncome = amount / periodDays;
 
-    std::vector<float>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
-    std::vector<float>::iterator itEnd = itStart + dateToIndex(endDate);
+    std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
+    std::vector<double>::iterator itEnd = itStart + dateToIndex(endDate);
 
     std::fill(itStart, itEnd, dailyIncome);
   }
 
-
-  double computeIncome(Date startDate, Date endDate);
+  double computeIncome(Date startDate, Date endDate) {
+    std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
+    std::vector<double>::iterator itEnd = itStart + dateToIndex(endDate);
+    double result = std::accumulate(itStart, itEnd, 0);
+    return result;
+  }
 
 private:
-  std::vector<float> m_earnings;
+  std::vector<double> m_earnings;
 };
 
+Date parseDate(std::string) {
+
+}
+
 int main() {
-  // int nActions;
-  // std::cin >> nActions;
-  // for (int i = 0; i < nActions; i++) {
-  //   continue;
-  // }
+  int nActions;
+  std::cin >> nActions;
+  std::string action;
+  std::string startDate;
+  std::string endDate;
+  int amount;
+  Budget budget;
 
-  Date date(2000, 1,10);
-  int index = dateToIndex(date);
-  std::cout << index << "\n";
-
-
-
+  for (int i = 0; i < nActions; i++) {
+    std::cin >> action;
+    std::cin >> startDate;
+    std::cin >> endDate;
+    if (action == "Earn") {
+      std::cin >> amount;
+      // budget.earn(Date startDate, Date endDate, double amount);
+    }
+  }
 
 
 }
