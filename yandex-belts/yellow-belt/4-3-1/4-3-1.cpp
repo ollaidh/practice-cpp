@@ -29,15 +29,18 @@ int dateToIndex(Date date) {
   return coundDaysDifference(startDate, date);
 }
 
-
-
 class Budget {
 public:
-  Budget() : m_earnings(365){}
+  Budget() : m_earnings(365, 0){}
 
   void earn(Date startDate, Date endDate, double amount) {
+    int periodDays = coundDaysDifference(startDate, endDate);
+    double dailyIncome = amount / periodDays;
 
+    std::vector<float>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
+    std::vector<float>::iterator itEnd = itStart + dateToIndex(endDate);
 
+    std::fill(itStart, itEnd, dailyIncome);
   }
 
 
