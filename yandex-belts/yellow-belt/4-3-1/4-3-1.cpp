@@ -2,10 +2,12 @@
 #include <iostream>
 #include <iterator>
 #include <numeric>
+#include <sstream>
 #include <vector>
 #include <string>
 
 struct Date {
+  Date(){};
   Date(int newYear, int newMonth, int newDay)
   : year(newYear)
   , month(newMonth)
@@ -34,7 +36,7 @@ class Budget {
 public:
   Budget() : m_earnings(365, 0){}
 
-  void earn(Date startDate, Date endDate, double amount) {
+  void earn(const Date& startDate, const Date& endDate, double amount) {
     int periodDays = coundDaysDifference(startDate, endDate);
     double dailyIncome = amount / periodDays;
 
@@ -44,7 +46,7 @@ public:
     std::fill(itStart, itEnd, dailyIncome);
   }
 
-  double computeIncome(Date startDate, Date endDate) {
+  double computeIncome(const Date& startDate, const Date& endDate) {
     std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
     std::vector<double>::iterator itEnd = itStart + dateToIndex(endDate);
     double result = std::accumulate(itStart, itEnd, 0);
@@ -55,8 +57,15 @@ private:
   std::vector<double> m_earnings;
 };
 
-Date parseDate(std::string) {
-
+Date parseDate(std::string& date) {
+  Date result;
+  std::stringstream ss{date};
+  ss >> result.year;
+  ss.ignore(1);
+  ss >> result.month;
+  ss.ignore(1);
+  ss >> result.day;
+  return result;
 }
 
 int main() {
@@ -77,6 +86,8 @@ int main() {
       // budget.earn(Date startDate, Date endDate, double amount);
     }
   }
+
+
 
 
 }
