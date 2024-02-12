@@ -83,11 +83,10 @@ int main() {
     std::cin >> endDate;
     if (action == "Earn") {
       std::cin >> amount;
-      // budget.earn(Date startDate, Date endDate, double amount);
+      budget.earn(parseDate(startDate), parseDate(endDate), amount);
+    } else if (action == "ComputeIncome") {
+      std::cout << budget.computeIncome(parseDate(startDate), parseDate(endDate));
     }
   }
-
-
-
 
 }
