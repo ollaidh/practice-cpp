@@ -8,6 +8,10 @@
 #include <string>
 #include <ctime>
 
+#ifdef LOCAL_RUN
+#include "yandexTest.h"
+#endif
+
 struct Date {
   Date(){};
   Date(int newYear, int newMonth, int newDay)
@@ -40,14 +44,7 @@ public:
 
   void earn(const Date& startDate, const Date& endDate, double amount) {
     int periodDays = coundDaysDifference(startDate, endDate);
-    // std::cout << "Days: " << periodDays << "\n";
-
     double dailyIncome = amount / periodDays;
-    // std::cout << "Daily: " << dailyIncome << "\n";
-
-    // std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
-    // std::vector<double>::iterator itEnd = m_earnings.begin() + dateToIndex(endDate);
-    // std::fill(itStart, itEnd + 1, dailyIncome);
 
     for (int i = dateToIndex(startDate); i <= dateToIndex(endDate); i++) {
       m_earnings[i] += dailyIncome;
@@ -55,13 +52,15 @@ public:
   }
 
   double computeIncome(const Date& startDate, const Date& endDate) {
+    std::cout << "income!!!"<< "\n";
+
     std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
     std::vector<double>::iterator itEnd = itStart + dateToIndex(endDate);
     double result = std::accumulate(itStart, itEnd, 0);
-    // for (int i = dateToIndex(startDate); i < dateToIndex(endDate); i ++) {
-    //   std::cout << m_earnings[i] << " ";
-    // }
-    // std::cout << std::endl;
+    for (int i = dateToIndex(startDate); i <= dateToIndex(endDate); i ++) {
+      std::cout << m_earnings[i] << " ";
+    }
+    std::cout << std::endl;
     return result;
   }
 
@@ -80,23 +79,43 @@ Date parseDate(std::string& date) {
   return result;
 }
 
+#ifdef LOCAL_RUN
+
+void testTest() {
+  AssertEqual(1, 1, "test");
+}
+
+void runTests() {
+  TestRunner tr;
+  tr.RunTest(testTest, "justTest");
+}
+
+#endif
+
 int main() {
+  #ifdef LOCAL_RUN
+  runTests();
+  #endif
+
   int nActions;
   std::cin >> nActions;
   std::string action;
   std::string startDate;
   std::string endDate;
-  int amount;
+  double amount;
   Budget budget;
 
   for (int i = 0; i < nActions; i++) {
     std::cin >> action;
     std::cin >> startDate;
-    try {
-      std::cin >> endDate;
-    } catch (std::exception) {
+
+    if (std::cin >> endDate) {
+      std::cout << endDate << "\n";
+    } else {
       endDate = startDate;
+      std::cout << "HERE!!!"<< "\n";
     }
+
     if (action == "Earn") {
       std::cin >> amount;
       budget.earn(parseDate(startDate), parseDate(endDate), amount);
@@ -107,3 +126,4 @@ int main() {
   }
 
 }
+

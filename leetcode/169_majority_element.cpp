@@ -34,7 +34,7 @@ TEST(majorityElement, ME) {
     ASSERT_EQ(2, solution.majorityElement(input2));
     std::vector input3 = {3, 3, 3, 3};
     ASSERT_EQ(3, solution.majorityElement(input3));
-    std::vector input4 = {5};
+    std::vector input4 = {51};
     ASSERT_EQ(5, solution.majorityElement(input4));
 
 }
