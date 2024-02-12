@@ -24,7 +24,7 @@ struct Date {
   int day;
 };
 
-int coundDaysDifference(Date startDate, Date endDate) {
+int countDaysDifference(Date startDate, Date endDate) {
     struct std::tm start = {0, 0, 0, startDate.day, startDate.month, startDate.year - 1900};  // Starts from 01-01-2000
     struct std::tm end = {0, 0, 0, endDate.day, endDate.month, endDate.year - 1900}; /* July 5, 2004 */
     std::time_t x = std::mktime(&start);
@@ -35,7 +35,7 @@ int coundDaysDifference(Date startDate, Date endDate) {
 
 int dateToIndex(Date date) {
   Date startDate(2000, 1, 1);
-  return coundDaysDifference(startDate, date);
+  return countDaysDifference(startDate, date);
 }
 
 class Budget {
@@ -43,7 +43,7 @@ public:
   Budget() : m_earnings(365, 0){}
 
   void earn(const Date& startDate, const Date& endDate, double amount) {
-    int periodDays = coundDaysDifference(startDate, endDate);
+    int periodDays = countDaysDifference(startDate, endDate);
     double dailyIncome = amount / periodDays;
 
     for (int i = dateToIndex(startDate); i <= dateToIndex(endDate); i++) {
