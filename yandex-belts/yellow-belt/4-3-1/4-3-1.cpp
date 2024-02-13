@@ -132,6 +132,12 @@ void testBudgetEarn() {
   Date earnDay7 = {2000, 2, 3};
   AssertEqual(budget.getEarnedByDay(earnDay7), 2, "earned 22");
 
+  startDate = {2001, 2, 1};
+  endDate = {2001, 2, 4};
+  budget.earn(startDate, endDate, 10);
+  Date earnDay8 = {2001, 2, 1};
+  AssertEqual(budget.getEarnedByDay(earnDay8), 2.5, "earned 2.5");
+
 }
 
 void testBudgetComputeIncome() {
@@ -185,6 +191,7 @@ int main() {
       std::cout << endDate << "\n";
     } else {
       endDate = startDate;
+      std::cout << "HERE!";
     }
 
     if (action == "Earn") {
