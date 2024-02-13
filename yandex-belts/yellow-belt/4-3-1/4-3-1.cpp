@@ -127,6 +127,21 @@ void testBudgetEarn() {
   AssertEqual(budget.getEarnedByDay(earnDay3), 20, "earned 20");
   Date earnDay4 = {2000, 2, 3};
   AssertEqual(budget.getEarnedByDay(earnDay4), 0, "earned 0");
+
+  startDate = {2000, 2, 1};
+  endDate = {2000, 2, 4};
+  budget.earn(startDate, endDate, 8);
+  Date earnDay5 = {2000, 2, 1};
+  AssertEqual(budget.getEarnedByDay(earnDay5), 22, "add aother 2 earned for earlier 20");
+  Date earnDay6 = {2000, 2, 2};
+  AssertEqual(budget.getEarnedByDay(earnDay6), 22, "add aother 2 earned for earlier 20");
+  Date earnDay7 = {2000, 2, 3};
+  AssertEqual(budget.getEarnedByDay(earnDay7), 2, "earned 22");
+
+}
+
+void testBudgetComputeIncome() {
+
 }
 
 void runTests() {
