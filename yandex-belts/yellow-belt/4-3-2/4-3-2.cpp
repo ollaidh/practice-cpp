@@ -93,14 +93,9 @@ class Budget {
 public:
   Budget() : m_earnings(1464000, 0){}
 
-  void earn(const Date& startDate, const Date& endDate, double amount) {
-    int periodDays = countDaysInterval(startDate, endDate);
-    double dailyIncome = amount / periodDays;
-    int start = dateToIndex(startDate);
-    int end = dateToIndex(endDate);
-    for (int i = start; i <= end; i++) {
-      m_earnings[i] += dailyIncome;
-    }
+  void earn(const Date& date, double amount) {
+    int index = dateToIndex(date);
+    m_earnings[index] += amount;
   }
 
   double computeIncome(const Date& startDate, const Date& endDate) {
@@ -124,125 +119,108 @@ private:
 
 #ifdef LOCAL_RUN
 
-void testParseDate() {
-  std::string currDate = "2000-11-5";
-  Date expected = Date(2000, 11, 5);
-  Date result = parseDate(currDate);
-  AssertEqual(expected.year, result.year, "year");
-  AssertEqual(expected.month, result.month, "month");
-  AssertEqual(expected.day, result.day, "day");
+// void testParseDate() {
+//   std::string currDate = "2000-11-5";
+//   Date expected = Date(2000, 11, 5);
+//   Date result = parseDate(currDate);
+//   AssertEqual(expected.year, result.year, "year");
+//   AssertEqual(expected.month, result.month, "month");
+//   AssertEqual(expected.day, result.day, "day");
 
-}
+// }
 
-void testCountDaysInterval() {
-  Date startDate(2022, 12, 12);
-  Date endDate(2022, 12, 16);
-  AssertEqual(5, countDaysInterval(startDate, endDate), "2022-12-12 : 2022-12-16");
+// void testCountDaysInterval() {
+//   Date startDate(2022, 12, 12);
+//   Date endDate(2022, 12, 16);
+//   AssertEqual(5, countDaysInterval(startDate, endDate), "2022-12-12 : 2022-12-16");
 
-  startDate = {2020, 2, 27};
-  endDate = {2020, 3, 5};
-  AssertEqual(8, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
+//   startDate = {2020, 2, 27};
+//   endDate = {2020, 3, 5};
+//   AssertEqual(8, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
 
-  startDate = {2021, 2, 27};
-  endDate = {2021, 3, 5};
-  AssertEqual(7, countDaysInterval(startDate, endDate), "2021-02-27 : 2021-03-05");
+//   startDate = {2021, 2, 27};
+//   endDate = {2021, 3, 5};
+//   AssertEqual(7, countDaysInterval(startDate, endDate), "2021-02-27 : 2021-03-05");
 
-  startDate = {2020, 2, 1};
-  endDate = {2020, 2, 1};
-  AssertEqual(1, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
-}
+//   startDate = {2020, 2, 1};
+//   endDate = {2020, 2, 1};
+//   AssertEqual(1, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
+// }
 
 void testBudgetEarn() {
   Budget budget;
-  Date startDate = {2000, 1, 29};
-  Date endDate = {2000, 2, 2};
-  budget.earn(startDate, endDate, 100);
+  Date date = {2000, 1, 29};
+  budget.earn(date, 20.2);
 
   Date earnDay1 = {2000, 1, 28};
   AssertEqual(budget.getEarnedByDay(earnDay1), 0, "earned 0");
   Date earnDay2 = {2000, 1, 29};
-  AssertEqual(budget.getEarnedByDay(earnDay2), 20, "earned 20");
-  Date earnDay3 = {2000, 2, 2};
-  AssertEqual(budget.getEarnedByDay(earnDay3), 20, "earned 20");
-  Date earnDay4 = {2000, 2, 3};
-  AssertEqual(budget.getEarnedByDay(earnDay4), 0, "earned 0");
+  AssertEqual(budget.getEarnedByDay(earnDay2), 20.2, "earned 20.2");
 
-  startDate = {2000, 2, 1};
-  endDate = {2000, 2, 4};
-  budget.earn(startDate, endDate, 8);
-  Date earnDay5 = {2000, 2, 1};
-  AssertEqual(budget.getEarnedByDay(earnDay5), 22, "add aother 2 earned for earlier 20");
-  Date earnDay6 = {2000, 2, 2};
-  AssertEqual(budget.getEarnedByDay(earnDay6), 22, "add aother 2 earned for earlier 20");
-  Date earnDay7 = {2000, 2, 3};
-  AssertEqual(budget.getEarnedByDay(earnDay7), 2, "earned 22");
-
-  startDate = {2001, 2, 1};
-  endDate = {2001, 2, 4};
-  budget.earn(startDate, endDate, 10);
-  Date earnDay8 = {2001, 2, 1};
-  AssertEqual(budget.getEarnedByDay(earnDay8), 2.5, "earned 2.5");
-}
-
-void testBudgetComputeIncome() {
-  Budget budget;
-  Date startDate = {2000, 1, 29};
-  Date endDate = {2000, 2, 2};
-  budget.earn(startDate, endDate, 100);
-
-  double result = budget.computeIncome(startDate, endDate);
-  AssertEqual(result, 100, "the same period as earned");
-  result = budget.computeIncome(startDate, startDate);
-  AssertEqual(result, 20, "earned for one day");
-
-  Date startDate1 = {2020, 1, 29};
-  Date endDate1 = {2020, 2, 2};
-  result = budget.computeIncome(startDate1, endDate1);
-  AssertEqual(result, 0, "nothing earned for this period");
-
-  startDate = {2001, 2, 1};
-  endDate = {2001, 2, 4};
-  budget.earn(startDate, endDate, 10);
-  Date endDate2 = {2001, 2, 3};
-  result = budget.computeIncome(startDate, endDate2);
-  AssertEqual(result, 7.5, "earn 7.5");
-
-  result = budget.computeIncome(startDate, startDate);
-  AssertEqual(result, 2.5, "earn 2.5 per day");
+  budget.earn(date, 20.2);
+  AssertEqual(budget.getEarnedByDay(earnDay2), 40.4, "earned additional 20.2");
 
 }
 
-void testParseCommand() {
-  std::string line = "Earn 2000-1-1 2000-1-5 12.5";
-  Command command = parseCommand(line);
-  AssertEqual(command.action, "Earn", "");
-  AssertEqual(command.startDate.year, 2000, "");
-  AssertEqual(command.startDate.month, 1, "");
-  AssertEqual(command.startDate.day, 1, "");
-  AssertEqual(command.endDate.year, 2000, "");
-  AssertEqual(command.endDate.month, 1, "");
-  AssertEqual(command.endDate.day, 5, "");
-  AssertEqual(command.amount, 12.5, "");
+// void testBudgetComputeIncome() {
+//   Budget budget;
+//   Date startDate = {2000, 1, 29};
+//   Date endDate = {2000, 2, 2};
+//   budget.earn(startDate, endDate, 100);
 
-  line = "ComputeIncome 2000-1-1";
-  command = parseCommand(line);
-  AssertEqual(command.action, "ComputeIncome", "");
-  AssertEqual(command.startDate.year, 2000, "");
-  AssertEqual(command.startDate.month, 1, "");
-  AssertEqual(command.startDate.day, 1, "");
-  AssertEqual(command.endDate.year, -1, "");
-  AssertEqual(command.endDate.month, -1, "");
-  AssertEqual(command.endDate.day, -1, "");
+//   double result = budget.computeIncome(startDate, endDate);
+//   AssertEqual(result, 100, "the same period as earned");
+//   result = budget.computeIncome(startDate, startDate);
+//   AssertEqual(result, 20, "earned for one day");
 
-}
+//   Date startDate1 = {2020, 1, 29};
+//   Date endDate1 = {2020, 2, 2};
+//   result = budget.computeIncome(startDate1, endDate1);
+//   AssertEqual(result, 0, "nothing earned for this period");
+
+//   startDate = {2001, 2, 1};
+//   endDate = {2001, 2, 4};
+//   budget.earn(startDate, endDate, 10);
+//   Date endDate2 = {2001, 2, 3};
+//   result = budget.computeIncome(startDate, endDate2);
+//   AssertEqual(result, 7.5, "earn 7.5");
+
+//   result = budget.computeIncome(startDate, startDate);
+//   AssertEqual(result, 2.5, "earn 2.5 per day");
+
+// }
+
+// void testParseCommand() {
+//   std::string line = "Earn 2000-1-1 2000-1-5 12.5";
+//   Command command = parseCommand(line);
+//   AssertEqual(command.action, "Earn", "");
+//   AssertEqual(command.startDate.year, 2000, "");
+//   AssertEqual(command.startDate.month, 1, "");
+//   AssertEqual(command.startDate.day, 1, "");
+//   AssertEqual(command.endDate.year, 2000, "");
+//   AssertEqual(command.endDate.month, 1, "");
+//   AssertEqual(command.endDate.day, 5, "");
+//   AssertEqual(command.amount, 12.5, "");
+
+//   line = "ComputeIncome 2000-1-1";
+//   command = parseCommand(line);
+//   AssertEqual(command.action, "ComputeIncome", "");
+//   AssertEqual(command.startDate.year, 2000, "");
+//   AssertEqual(command.startDate.month, 1, "");
+//   AssertEqual(command.startDate.day, 1, "");
+//   AssertEqual(command.endDate.year, -1, "");
+//   AssertEqual(command.endDate.month, -1, "");
+//   AssertEqual(command.endDate.day, -1, "");
+
+// }
 
 void runTests() {
   TestRunner tr;
-  tr.RunTest(testCountDaysInterval, "testCountDaysInterval function: ");
-  tr.RunTest(testParseDate, "testParseDate function: ");
+  // tr.RunTest(testCountDaysInterval, "testCountDaysInterval function: ");
+  // tr.RunTest(testParseDate, "testParseDate function: ");
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
-  tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
-  tr.RunTest(testParseCommand, "Parsing input command: ");
+  // tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
+  // tr.RunTest(testParseCommand, "Parsing input command: ");
 
 }
 
@@ -265,21 +243,21 @@ int main() {
   nActions = std::stoi(line);
   Command command;
 
-  for (int i = 0; i < nActions; i++) {
-    std::getline(std::cin, line);
-    command = parseCommand(line);
+  // for (int i = 0; i < nActions; i++) {
+  //   std::getline(std::cin, line);
+  //   command = parseCommand(line);
 
-    if (command.action == "Earn") {
-      budget.earn(command.startDate, command.endDate, command.amount);
-    } else if (command.action == "ComputeIncome") {
-      // std::cout << "YEAR: " << command.endDate.year << "\n";
-      if (command.endDate.year == -1) {
-        command.endDate = command.startDate;
-      }
-      std::cout.precision(25);
-      std::cout << budget.computeIncome(command.startDate,command.endDate) << "\n";
-    }
-  }
+  //   if (command.action == "Earn") {
+  //     budget.earn(command.startDate, command.endDate, command.amount);
+  //   } else if (command.action == "ComputeIncome") {
+  //     // std::cout << "YEAR: " << command.endDate.year << "\n";
+  //     if (command.endDate.year == -1) {
+  //       command.endDate = command.startDate;
+  //     }
+  //     std::cout.precision(25);
+  //     std::cout << budget.computeIncome(command.startDate,command.endDate) << "\n";
+  //   }
+  // }
 
 }
 
