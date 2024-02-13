@@ -40,7 +40,7 @@ int dateToIndex(Date date) {
 
 class Budget {
 public:
-  Budget() : m_earnings(365, 0){}
+  Budget() : m_earnings(366000, 0){}
 
   void earn(const Date& startDate, const Date& endDate, double amount) {
     int periodDays = countDaysInterval(startDate, endDate);
@@ -54,7 +54,8 @@ public:
   double computeIncome(const Date& startDate, const Date& endDate) {
     std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
     std::vector<double>::iterator itEnd = m_earnings.begin() + dateToIndex(endDate);
-    double result = std::accumulate(itStart, itEnd + 1, 0);
+
+    double result = std::accumulate(itStart, itEnd + 1, 0.0);
     return result;
   }
 
@@ -137,7 +138,6 @@ void testBudgetEarn() {
   budget.earn(startDate, endDate, 10);
   Date earnDay8 = {2001, 2, 1};
   AssertEqual(budget.getEarnedByDay(earnDay8), 2.5, "earned 2.5");
-
 }
 
 void testBudgetComputeIncome() {
@@ -151,13 +151,17 @@ void testBudgetComputeIncome() {
   result = budget.computeIncome(startDate, startDate);
   AssertEqual(result, 20, "earned for one day");
 
-
-
   Date startDate1 = {2020, 1, 29};
   Date endDate1 = {2020, 2, 2};
   result = budget.computeIncome(startDate1, endDate1);
   AssertEqual(result, 0, "nothing earned for this period");
 
+  startDate = {2001, 2, 1};
+  endDate = {2001, 2, 4};
+  budget.earn(startDate, endDate, 10);
+  Date endDate2 = {2001, 2, 3};
+  result = budget.computeIncome(startDate, endDate2);
+  AssertEqual(result, 7.5, "earn 7.5");
 }
 
 void runTests() {
