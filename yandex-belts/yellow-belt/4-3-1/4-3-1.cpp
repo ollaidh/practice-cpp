@@ -64,6 +64,10 @@ public:
     return result;
   }
 
+  double getEarnedByDay(const Date& date) {
+    return m_earnings[dateToIndex(date)];
+  }
+
 private:
   std::vector<double> m_earnings;
 };
@@ -109,10 +113,27 @@ void testCountDaysInterval() {
   AssertEqual(1, countDaysInterval(startDate, endDate), "2020-02-27 : 2020-03-05");
 }
 
+void testBudgetEarn() {
+  Budget budget;
+  Date startDate = {2000, 1, 29};
+  Date endDate = {2000, 2, 2};
+  budget.earn(startDate, endDate, 100);
+
+  Date earnDay1 = {2000, 1, 28};
+  AssertEqual(budget.getEarnedByDay(earnDay1), 0, "earned 0");
+  Date earnDay2 = {2000, 1, 29};
+  AssertEqual(budget.getEarnedByDay(earnDay2), 20, "earned 20");
+  Date earnDay3 = {2000, 2, 2};
+  AssertEqual(budget.getEarnedByDay(earnDay3), 20, "earned 20");
+  Date earnDay4 = {2000, 2, 3};
+  AssertEqual(budget.getEarnedByDay(earnDay4), 0, "earned 0");
+}
+
 void runTests() {
   TestRunner tr;
   tr.RunTest(testCountDaysInterval, "testCountDaysInterval function");
   tr.RunTest(testParseDate, "testParseDate function");
+  tr.RunTest(testBudgetEarn, "testBudgetEarn Budget method");
 
 }
 
@@ -139,7 +160,6 @@ int main() {
       std::cout << endDate << "\n";
     } else {
       endDate = startDate;
-      std::cout << "HERE!!!"<< "\n";
     }
 
     if (action == "Earn") {
