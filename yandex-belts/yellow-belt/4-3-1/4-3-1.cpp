@@ -53,8 +53,8 @@ public:
 
   double computeIncome(const Date& startDate, const Date& endDate) {
     std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
-    std::vector<double>::iterator itEnd = itStart + dateToIndex(endDate);
-    double result = std::accumulate(itStart, itEnd, 0);
+    std::vector<double>::iterator itEnd = m_earnings.begin() + dateToIndex(endDate);
+    double result = std::accumulate(itStart, itEnd + 1, 0);
     return result;
   }
 
@@ -142,6 +142,9 @@ void testBudgetComputeIncome() {
 
   double result = budget.computeIncome(startDate, endDate);
   AssertEqual(result, 100, "the same period as earned");
+  result = budget.computeIncome(startDate, startDate);
+  AssertEqual(result, 20, "earned for one day");
+
 
 
   Date startDate1 = {2020, 1, 29};
