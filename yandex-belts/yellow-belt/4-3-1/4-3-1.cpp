@@ -205,6 +205,10 @@ void testBudgetComputeIncome() {
   Date endDate2 = {2001, 2, 3};
   result = budget.computeIncome(startDate, endDate2);
   AssertEqual(result, 7.5, "earn 7.5");
+
+  result = budget.computeIncome(startDate, startDate);
+  AssertEqual(result, 2.5, "earn 2.5 per day");
+
 }
 
 void testParseCommand() {
