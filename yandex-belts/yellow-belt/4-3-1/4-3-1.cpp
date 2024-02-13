@@ -13,7 +13,11 @@
 #endif
 
 struct Date {
-  Date(){};
+  Date()
+  : year(-1)
+  , month(-1)
+  , day(-1)
+  {};
   Date(int newYear, int newMonth, int newDay)
   : year(newYear)
   , month(newMonth)
@@ -23,6 +27,53 @@ struct Date {
   int month;
   int day;
 };
+
+Date parseDate(std::string& date) {
+  Date result;
+  std::stringstream ss{date};
+  ss >> result.year;
+  ss.ignore(1);
+  ss >> result.month;
+  ss.ignore(1);
+  ss >> result.day;
+  return result;
+}
+
+struct Command {
+  Command()
+  : action("")
+  , startDate()
+  , endDate()
+  , amount(0)
+  {};
+  Command(std::string new_action, Date new_start, Date new_end, double new_amount)
+  : action(new_action)
+  , startDate(new_start)
+  , endDate(new_end)
+  , amount(new_amount)
+  {}
+  std::string action;
+  Date startDate;
+  Date endDate;
+  double amount;
+};
+
+Command parseCommand(const std::string& input) {
+  std::stringstream ss{input};
+  std::string action;
+  std::string start;
+  std::string end;
+  double amount;
+
+  ss >> action;
+  ss >> start;
+  ss >> end;
+  // std::cout << "END: " << end << "\n";
+  ss >> amount;
+  // std::cout << "AMOUNT: " << amount << "\n";
+
+  return {action, parseDate(start), parseDate(end), amount};
+}
 
 int countDaysInterval(Date startDate, Date endDate) {
     struct std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1900};
@@ -67,16 +118,8 @@ private:
   std::vector<double> m_earnings;
 };
 
-Date parseDate(std::string& date) {
-  Date result;
-  std::stringstream ss{date};
-  ss >> result.year;
-  ss.ignore(1);
-  ss >> result.month;
-  ss.ignore(1);
-  ss >> result.day;
-  return result;
-}
+
+
 
 #ifdef LOCAL_RUN
 
@@ -164,12 +207,38 @@ void testBudgetComputeIncome() {
   AssertEqual(result, 7.5, "earn 7.5");
 }
 
+void testParseCommand() {
+  std::string line = "Earn 2000-1-1 2000-1-5 12.5";
+  Command command = parseCommand(line);
+  AssertEqual(command.action, "Earn", "");
+  AssertEqual(command.startDate.year, 2000, "");
+  AssertEqual(command.startDate.month, 1, "");
+  AssertEqual(command.startDate.day, 1, "");
+  AssertEqual(command.endDate.year, 2000, "");
+  AssertEqual(command.endDate.month, 1, "");
+  AssertEqual(command.endDate.day, 5, "");
+  AssertEqual(command.amount, 12.5, "");
+
+  line = "ComputeIncome 2000-1-1";
+  command = parseCommand(line);
+  AssertEqual(command.action, "ComputeIncome", "");
+  AssertEqual(command.startDate.year, 2000, "");
+  AssertEqual(command.startDate.month, 1, "");
+  AssertEqual(command.startDate.day, 1, "");
+  AssertEqual(command.endDate.year, -1, "");
+  AssertEqual(command.endDate.month, -1, "");
+  AssertEqual(command.endDate.day, -1, "");
+
+}
+
 void runTests() {
   TestRunner tr;
   tr.RunTest(testCountDaysInterval, "testCountDaysInterval function: ");
   tr.RunTest(testParseDate, "testParseDate function: ");
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
   tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
+  tr.RunTest(testParseCommand, "Parsing input command: ");
+
 }
 
 #endif
@@ -180,30 +249,30 @@ int main() {
   #endif
 
   int nActions;
-  std::cin >> nActions;
+  // std::cin >> nActions;
   std::string action;
   std::string startDate;
   std::string endDate;
   double amount;
   Budget budget;
+  std::string line;
+  std::getline(std::cin, line);
+  nActions = std::stoi(line);
+  Command command;
 
   for (int i = 0; i < nActions; i++) {
-    std::cin >> action;
-    std::cin >> startDate;
+    std::getline(std::cin, line);
+    command = parseCommand(line);
 
-    if (std::cin >> endDate) {
-      std::cout << endDate << "\n";
-    } else {
-      endDate = startDate;
-      std::cout << "HERE!";
-    }
-
-    if (action == "Earn") {
-      std::cin >> amount;
-      budget.earn(parseDate(startDate), parseDate(endDate), amount);
-    } else if (action == "ComputeIncome") {
+    if (command.action == "Earn") {
+      budget.earn(command.startDate, command.endDate, command.amount);
+    } else if (command.action == "ComputeIncome") {
+      // std::cout << "YEAR: " << command.endDate.year << "\n";
+      if (command.endDate.year == -1) {
+        command.endDate = command.startDate;
+      }
       std::cout.precision(25);
-      std::cout << budget.computeIncome(parseDate(startDate), parseDate(endDate)) << "\n";
+      std::cout << budget.computeIncome(command.startDate,command.endDate) << "\n";
     }
   }
 
