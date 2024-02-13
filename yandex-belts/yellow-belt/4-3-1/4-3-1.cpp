@@ -52,15 +52,9 @@ public:
   }
 
   double computeIncome(const Date& startDate, const Date& endDate) {
-    std::cout << "income!!!"<< "\n";
-
     std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
     std::vector<double>::iterator itEnd = itStart + dateToIndex(endDate);
     double result = std::accumulate(itStart, itEnd, 0);
-    for (int i = dateToIndex(startDate); i <= dateToIndex(endDate); i ++) {
-      std::cout << m_earnings[i] << " ";
-    }
-    std::cout << std::endl;
     return result;
   }
 
@@ -141,15 +135,28 @@ void testBudgetEarn() {
 }
 
 void testBudgetComputeIncome() {
+  Budget budget;
+  Date startDate = {2000, 1, 29};
+  Date endDate = {2000, 2, 2};
+  budget.earn(startDate, endDate, 100);
+
+  double result = budget.computeIncome(startDate, endDate);
+  AssertEqual(result, 100, "the same period as earned");
+
+
+  Date startDate1 = {2020, 1, 29};
+  Date endDate1 = {2020, 2, 2};
+  result = budget.computeIncome(startDate1, endDate1);
+  AssertEqual(result, 0, "nothing earned for this period");
 
 }
 
 void runTests() {
   TestRunner tr;
-  tr.RunTest(testCountDaysInterval, "testCountDaysInterval function");
-  tr.RunTest(testParseDate, "testParseDate function");
-  tr.RunTest(testBudgetEarn, "testBudgetEarn Budget method");
-
+  tr.RunTest(testCountDaysInterval, "testCountDaysInterval function: ");
+  tr.RunTest(testParseDate, "testParseDate function: ");
+  tr.RunTest(testBudgetEarn, "earn Budget method: ");
+  tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
 }
 
 #endif
