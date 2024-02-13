@@ -162,33 +162,31 @@ void testBudgetEarn() {
 
 }
 
-// void testBudgetComputeIncome() {
-//   Budget budget;
-//   Date startDate = {2000, 1, 29};
-//   Date endDate = {2000, 2, 2};
-//   budget.earn(startDate, endDate, 100);
+void testBudgetComputeIncome() {
+  Budget budget;
+  Date date1 = {2000, 1, 2};
+  Date date2 = {2000, 1, 6};
+  Date date3 = {2000, 1, 3};
 
-//   double result = budget.computeIncome(startDate, endDate);
-//   AssertEqual(result, 100, "the same period as earned");
-//   result = budget.computeIncome(startDate, startDate);
-//   AssertEqual(result, 20, "earned for one day");
+  budget.earn(date1, 20);
+  budget.earn(date2, 10);
+  budget.earn(date3, 10);
 
-//   Date startDate1 = {2020, 1, 29};
-//   Date endDate1 = {2020, 2, 2};
-//   result = budget.computeIncome(startDate1, endDate1);
-//   AssertEqual(result, 0, "nothing earned for this period");
+  Date startDate1 = {2000, 1, 1};
+  Date endDate1 = {2000, 1, 2};
 
-//   startDate = {2001, 2, 1};
-//   endDate = {2001, 2, 4};
-//   budget.earn(startDate, endDate, 10);
-//   Date endDate2 = {2001, 2, 3};
-//   result = budget.computeIncome(startDate, endDate2);
-//   AssertEqual(result, 7.5, "earn 7.5");
+  Date startDate2 = {2000, 1, 2};
+  Date endDate2 = {2000, 1, 6};
 
-//   result = budget.computeIncome(startDate, startDate);
-//   AssertEqual(result, 2.5, "earn 2.5 per day");
+  Date startDate3 = {2000, 1, 4};
+  Date endDate3 = {2000, 1, 5};
 
-// }
+  AssertEqual(budget.computeIncome(startDate1, endDate1), 20, "");
+  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "");
+  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "");
+  AssertEqual(budget.computeIncome(endDate1, endDate1), 20, "one day earn");
+
+}
 
 // void testParseCommand() {
 //   std::string line = "Earn 2000-1-1 2000-1-5 12.5";
@@ -219,7 +217,7 @@ void runTests() {
   // tr.RunTest(testCountDaysInterval, "testCountDaysInterval function: ");
   // tr.RunTest(testParseDate, "testParseDate function: ");
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
-  // tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
+  tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
   // tr.RunTest(testParseCommand, "Parsing input command: ");
 
 }
