@@ -28,7 +28,7 @@ struct Date {
   int day;
 };
 
-Date parseDate(std::string& date) {
+Date parseDate(const std::string& date) {
   Date result;
   std::stringstream ss{date};
   ss >> result.year;
@@ -47,7 +47,7 @@ struct Command {
   , amount(0)
   {};
   Command(std::string new_action, Date new_start, Date new_end, double new_amount)
-  : action(new_action)
+  : action(std::move(new_action))
   , startDate(new_start)
   , endDate(new_end)
   , amount(new_amount)
@@ -72,12 +72,12 @@ Command parseCommand(const std::string& input) {
   ss >> amount;
   // std::cout << "AMOUNT: " << amount << "\n";
 
-  return {action, parseDate(start), parseDate(end), amount};
+  return {std::move(action), parseDate(start), parseDate(end), amount};
 }
 
 int countDaysInterval(Date startDate, Date endDate) {
-    struct std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1900};
-    struct std::tm end = {0, 0, 0, endDate.day, endDate.month - 1, endDate.year - 1900};
+    std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1900};
+    std::tm end = {0, 0, 0, endDate.day, endDate.month - 1, endDate.year - 1900};
     std::time_t x = std::mktime(&start);
     std::time_t y = std::mktime(&end);
     int interval = std::difftime(y, x) / (60 * 60 * 24) + 1;
@@ -96,15 +96,16 @@ public:
   void earn(const Date& startDate, const Date& endDate, double amount) {
     int periodDays = countDaysInterval(startDate, endDate);
     double dailyIncome = amount / periodDays;
-
-    for (int i = dateToIndex(startDate); i <= dateToIndex(endDate); i++) {
+    int start = dateToIndex(startDate);
+    int end = dateToIndex(endDate);
+    for (int i = start; i <= end; i++) {
       m_earnings[i] += dailyIncome;
     }
   }
 
   double computeIncome(const Date& startDate, const Date& endDate) {
-    std::vector<double>::iterator itStart = m_earnings.begin() + dateToIndex(startDate);
-    std::vector<double>::iterator itEnd = m_earnings.begin() + dateToIndex(endDate);
+    auto itStart = m_earnings.begin() + dateToIndex(startDate);
+    auto itEnd = m_earnings.begin() + dateToIndex(endDate);
 
     double result = std::accumulate(itStart, itEnd + 1, 0.0);
     return result;
