@@ -189,33 +189,30 @@ int main() {
   runTests();
   #endif
 
-  int nActions;
-  // std::cin >> nActions;
-  std::string action;
-  std::string startDate;
-  std::string endDate;
-  double amount;
   Budget budget;
+
+  int nEarnActions;
   std::string line;
+
   std::getline(std::cin, line);
-  nActions = std::stoi(line);
-  // Command command;
+  nEarnActions = std::stoi(line);
+  for (int i = 0; i < nEarnActions; i++) {
+    std::getline(std::cin, line);
+    auto [date, amount] = parseEarnCommand(line);
+    budget.earn(date, amount);
+  }
 
-  // for (int i = 0; i < nActions; i++) {
-  //   std::getline(std::cin, line);
-  //   command = parseCommand(line);
-
-  //   if (command.action == "Earn") {
-  //     budget.earn(command.startDate, command.endDate, command.amount);
-  //   } else if (command.action == "ComputeIncome") {
-  //     // std::cout << "YEAR: " << command.endDate.year << "\n";
-  //     if (command.endDate.year == -1) {
-  //       command.endDate = command.startDate;
-  //     }
-  //     std::cout.precision(25);
-  //     std::cout << budget.computeIncome(command.startDate,command.endDate) << "\n";
-  //   }
-  // }
-
+  int nCountActions;
+  std::getline(std::cin, line);
+  nCountActions = std::stoi(line);
+  for (int i = 0; i < nCountActions; i++) {
+    std::getline(std::cin, line);
+    auto [start, end] = parseCountCommand(line);
+    if (end.year == -1) {
+      end = start;
+    }
+    std::cout.precision(25);
+    std::cout << budget.computeIncome(start,end) << "\n";
+  }
 }
 
