@@ -59,8 +59,8 @@ std::pair<Date, Date> parseCountCommand(const std::string& input) {
 }
 
 int countDaysInterval(Date startDate, Date endDate) {
-    std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1900};
-    std::tm end = {0, 0, 0, endDate.day, endDate.month - 1, endDate.year - 1900};
+    std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1700};
+    std::tm end = {0, 0, 0, endDate.day, endDate.month - 1, endDate.year - 1700};
     std::time_t x = std::mktime(&start);
     std::time_t y = std::mktime(&end);
     int interval = std::difftime(y, x) / (60 * 60 * 24) + 1;
@@ -68,7 +68,7 @@ int countDaysInterval(Date startDate, Date endDate) {
 }
 
 int dateToIndex(Date date) {
-  Date startDate(2000, 1, 1);
+  Date startDate(1700, 1, 1);
   return countDaysInterval(startDate, date);
 }
 
