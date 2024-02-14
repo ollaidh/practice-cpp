@@ -153,15 +153,29 @@ void testParseEarnCommand() {
   AssertEqual(date.day, 2, "");
   AssertEqual(amount, 22.3, "");
 }
-//   line = "ComputeIncome 2000-1-1";
-//   command = parseCommand(line);
-//   AssertEqual(command.action, "ComputeIncome", "");
-//   AssertEqual(command.startDate.year, 2000, "");
-//   AssertEqual(command.startDate.month, 1, "");
-//   AssertEqual(command.startDate.day, 1, "");
-//   AssertEqual(command.endDate.year, -1, "");
-//   AssertEqual(command.endDate.month, -1, "");
-//   AssertEqual(command.endDate.day, -1, "");
+
+void testParseCountCommand() {
+  std::string line = "2000-1-2 2001-11-12";
+  auto [dateStart, dateEnd] = parseCountCommand(line);
+  AssertEqual(dateStart.year, 2000, "");
+  AssertEqual(dateStart.month, 1, "");
+  AssertEqual(dateStart.day, 2, "");
+  AssertEqual(dateEnd.year, 2001, "");
+  AssertEqual(dateEnd.month, 11, "");
+  AssertEqual(dateEnd.day, 12, "");
+
+  line = "2000-1-2";
+  auto [dateStart2, dateEnd2] = parseCountCommand(line);
+
+  AssertEqual(dateStart2.year, 2000, "");
+  AssertEqual(dateStart2.month, 1, "");
+  AssertEqual(dateStart2.day, 2, "");
+  AssertEqual(dateEnd2.year, -1, "");
+  AssertEqual(dateEnd2.month, -1, "");
+  AssertEqual(dateEnd2.day, -1, "");
+
+}
+
 
 // }
 
@@ -172,6 +186,8 @@ void runTests() {
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
   tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
   tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
+  tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
+
 
 }
 
