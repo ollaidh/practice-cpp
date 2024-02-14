@@ -31,11 +31,11 @@ struct Date {
 };
 
 bool operator<(const Date& lhs, const Date& rhs) {
-  if (lhs.year < rhs.year) {
-    return true;
+  if (lhs.year != rhs.year) {
+    return lhs.year < rhs.year;
   }
-  if (lhs.month < rhs.month) {
-    return true;
+  if (lhs.month != rhs.month) {
+    return lhs.month < rhs.month;
   }
   return lhs.day < rhs.day;
 }
@@ -69,20 +69,6 @@ std::pair<Date, Date> parseCountCommand(const std::string& input) {
   return {parseDate(start), parseDate(end)};
 }
 
-int countDaysInterval(Date startDate, Date endDate) {
-    std::tm start = {0, 0, 0, startDate.day, startDate.month - 1, startDate.year - 1700};
-    std::tm end = {0, 0, 0, endDate.day, endDate.month - 1, endDate.year - 1700};
-    std::time_t x = std::mktime(&start);
-    std::time_t y = std::mktime(&end);
-    int interval = std::difftime(y, x) / (60 * 60 * 24) + 1;
-    return interval;
-}
-
-int dateToIndex(Date date) {
-  Date startDate(1700, 1, 1);
-  return countDaysInterval(startDate, date);
-}
-
 class Budget {
 public:
   Budget(){}
@@ -95,6 +81,17 @@ public:
   double computeIncome(const Date& startDate, const Date& endDate) {
     auto itStart = m_earnings.lower_bound(startDate);
     auto itEnd = m_earnings.upper_bound(endDate);
+
+    if (itStart == m_earnings.end()) {
+      return 0;
+    }
+
+    if (itStart == std::prev(itEnd)) {
+      return itStart->second;
+    }
+
+    // std::cout << itStart->first.year << " " << (itEnd==m_earnings.end()) << "\n";
+
 
     double result = std::accumulate(itStart, itEnd, 0.0,
             [](double acc, const auto& pair) {
@@ -143,7 +140,7 @@ void testBudgetComputeIncome() {
   budget.earn(date3, 10);
 
   Date startDate1 = {2000, 1, 1};
-  Date endDate1 = {2000, 1, 2};
+  Date endDate1 = {2001, 1, 2};
 
   Date startDate2 = {2000, 1, 2};
   Date endDate2 = {2000, 1, 6};
@@ -151,10 +148,10 @@ void testBudgetComputeIncome() {
   Date startDate3 = {2000, 1, 4};
   Date endDate3 = {2000, 1, 5};
 
-  AssertEqual(budget.computeIncome(startDate1, endDate1), 20, "");
-  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "");
+  AssertEqual(budget.computeIncome(startDate1, endDate1), 40, "1");
+  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "2");
   AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "");
-  AssertEqual(budget.computeIncome(endDate1, endDate1), 20, "one day earn");
+  AssertEqual(budget.computeIncome(date1, date1), 20, "one day earn");
 
 }
 
