@@ -166,29 +166,20 @@ void testParseCountCommand() {
 
   line = "2000-1-2";
   auto [dateStart2, dateEnd2] = parseCountCommand(line);
-
   AssertEqual(dateStart2.year, 2000, "");
   AssertEqual(dateStart2.month, 1, "");
   AssertEqual(dateStart2.day, 2, "");
   AssertEqual(dateEnd2.year, -1, "");
   AssertEqual(dateEnd2.month, -1, "");
   AssertEqual(dateEnd2.day, -1, "");
-
 }
-
-
-// }
 
 void runTests() {
   TestRunner tr;
-  // tr.RunTest(testCountDaysInterval, "testCountDaysInterval function: ");
-  // tr.RunTest(testParseDate, "testParseDate function: ");
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
   tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
   tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
   tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
-
-
 }
 
 #endif
