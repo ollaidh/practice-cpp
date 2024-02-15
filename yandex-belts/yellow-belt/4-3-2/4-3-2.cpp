@@ -96,7 +96,7 @@ public:
     auto itStart = m_earnings.lower_bound(startDate);
     auto itEnd = m_earnings.upper_bound(endDate);
 
-    if (itStart == m_earnings.end()) {
+    if (itStart == m_earnings.end() || (itStart == itEnd)) {
       return 0;
     }
 
@@ -104,7 +104,12 @@ public:
       return itStart->second;
     }
 
-    double result = itEnd->second - itStart->second;
+    if (itStart == m_earnings.begin()) {
+      return std::prev(itEnd)->second;
+    }
+
+    double result = std::prev(itEnd)->second - itStart->second;
+
     return result;
   }
 
@@ -166,7 +171,7 @@ void testBudgetComputeIncome() {
 
   AssertEqual(budget.computeIncome(startDate1, endDate1), 40, "1");
   AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "2");
-  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "");
+  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "3");
   AssertEqual(budget.computeIncome(date1, date1), 20, "one day earn");
 
 }
@@ -203,7 +208,7 @@ void testBudgetComputeIncome() {
 void runTests() {
   TestRunner tr;
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
-  // tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
+  tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
   // tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
   // tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
 }
