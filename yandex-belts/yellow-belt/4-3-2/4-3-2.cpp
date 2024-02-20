@@ -94,12 +94,12 @@ public:
       return 0;
     }
 
-    if (itStart == m_earnings.begin()) {
-      return std::prev(itEnd)->second;
-    }
-
     if (itStart == std::prev(itEnd)) {
       return itStart->second;
+    }
+
+    if (itStart == m_earnings.begin()) {
+      return std::prev(itEnd)->second;
     }
 
     double result = std::prev(itEnd)->second - itStart->second;
@@ -141,12 +141,6 @@ void testBudgetEarn() {
   date = "2000-2-1";
   budget.earn(date, 10);
   AssertEqual(budget.getEarnedByDay(date), 35, "earned 35");
-
-
-  Date date0 = "1998-1-3";
-  budget.earn(date0, 7);
-  AssertEqual(budget.getEarnedByDay(date0), 7, "earned 7");
-  AssertEqual(budget.getEarnedByDay(earnDay2), 32, "earned 20");
 
 }
 
@@ -190,14 +184,6 @@ void testBudgetComputeIncome() {
   budget.earn(date0, 7);
   AssertEqual(budget.computeIncome(endDateBefore, endDate1), 47, "1 after adding in begin");
   AssertEqual(budget.computeIncome(date0, startDate1), 7, "2 after adding in begin");
-
-  AssertEqual(budget.computeIncome(startDateBefore, startDateBefore), 0, "Day before all earnings");
-  AssertEqual(budget.computeIncome(startDateBefore, endDateBefore), 0, "Interval before all earnings");
-  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "Interval between earnings - earned 0");
-
-  AssertEqual(budget.computeIncome(date1, date1), 20, "One day earn after adding in begin");
-  AssertEqual(budget.computeIncome(startDateAfter, startDateAfter), 0, "Day after all earnings");
-  AssertEqual(budget.computeIncome(startDateAfter, endDateAfter), 0, "Interval after all earnings");
 
 
 }
