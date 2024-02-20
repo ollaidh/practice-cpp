@@ -40,10 +40,10 @@ Date parseDate(const std::string& date) {
   return result;
 }
 
-std::pair<Date, double> parseEarnCommand(const std::string& input) {
+std::pair<Date, int> parseEarnCommand(const std::string& input) {
   std::stringstream ss{input};
   std::string start;
-  double amount;
+  int amount;
   ss >> start;
   ss >> amount;
   return {parseDate(start), amount};
@@ -76,25 +76,25 @@ class Budget {
 public:
   Budget() : m_earnings(1464000, 0){}
 
-  void earn(const Date& date, double amount) {
+  void earn(const Date& date, int amount) {
     int index = dateToIndex(date);
     m_earnings[index] += amount;
   }
 
-  double computeIncome(const Date& startDate, const Date& endDate) {
+  int computeIncome(const Date& startDate, const Date& endDate) {
     auto itStart = m_earnings.begin() + dateToIndex(startDate);
     auto itEnd = m_earnings.begin() + dateToIndex(endDate);
 
-    double result = std::accumulate(itStart, itEnd + 1, 0.0);
+    int result = std::accumulate(itStart, itEnd + 1, 0.0);
     return result;
   }
 
-  double getEarnedByDay(const Date& date) {
+  int getEarnedByDay(const Date& date) {
     return m_earnings[dateToIndex(date)];
   }
 
 private:
-  std::vector<double> m_earnings;
+  std::vector<int> m_earnings;
 };
 
 
@@ -106,15 +106,15 @@ private:
 void testBudgetEarn() {
   Budget budget;
   Date date = {2000, 1, 29};
-  budget.earn(date, 20.2);
+  budget.earn(date, 20);
 
   Date earnDay1 = {2000, 1, 28};
   AssertEqual(budget.getEarnedByDay(earnDay1), 0, "earned 0");
   Date earnDay2 = {2000, 1, 29};
-  AssertEqual(budget.getEarnedByDay(earnDay2), 20.2, "earned 20.2");
+  AssertEqual(budget.getEarnedByDay(earnDay2), 20, "earned 20");
 
-  budget.earn(date, 20.2);
-  AssertEqual(budget.getEarnedByDay(earnDay2), 40.4, "earned additional 20.2");
+  budget.earn(date, 20);
+  AssertEqual(budget.getEarnedByDay(earnDay2), 40, "earned additional 20");
 
 }
 
