@@ -84,12 +84,16 @@ public:
     int index = dateToIndex(date);
     m_earnings[index] += amount;
 
-    auto itStart = m_earnings.begin() + dateToIndex(date);
-    auto itStartAccum = m_accumEarnings.begin() + dateToIndex(date);
+    // auto itStart = m_earnings.begin() + dateToIndex(date);
+    // auto itStartAccum = m_accumEarnings.begin() + dateToIndex(date);
 
-    for (int i = index; i < m_accumEarnings.size(); i++) {
-      m_accumEarnings[i] += amount;
-    }
+    // for (int i = index; i < m_accumEarnings.size(); i++) {
+    //   m_accumEarnings[i] += amount;
+    // }
+  }
+
+  void cacheAccumEarning() {
+    std::partial_sum(m_earnings.begin(), m_earnings.end(), m_accumEarnings.begin());
   }
 
   int computeIncome(const Date& startDate, const Date& endDate) {
@@ -169,6 +173,7 @@ void testBudgetComputeIncome() {
   budget.earn(date1, 20);
   budget.earn(date2, 10);
   budget.earn(date3, 10);
+  budget.cacheAccumEarning();
 
   Date startDate1 = {2000, 1, 1};
   Date endDate1 = {2000, 1, 2};
@@ -183,6 +188,16 @@ void testBudgetComputeIncome() {
   AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "40");
   AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "0");
   AssertEqual(budget.computeIncome(endDate1, endDate1), 20, "20 one day earn");
+
+
+
+  // Date date4 = {2000, 2, 1};
+  // Date date5 = {2000, 2, 2};
+
+  // budget.earn(date4, 5);
+  // budget.earn(date5, 5);
+  // budget.earn(date3, 10);
+  // budget.cacheAccumEarning();
 
 }
 
@@ -243,6 +258,8 @@ int main() {
     auto [date, amount] = parseEarnCommand(line);
     budget.earn(date, amount);
   }
+
+  budget.cacheAccumEarning();
 
   int nCountActions;
   std::getline(std::cin, line);
