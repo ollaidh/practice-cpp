@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <ctime>
+#include <cstdlib>
 
 #ifdef LOCAL_RUN
 #include "yandexTest.h"
@@ -29,6 +30,16 @@ struct Date {
   int month;
   int day;
 };
+
+bool operator<(const Date& lhs, const Date& rhs) {
+  if (lhs.year != rhs.year) {
+    return lhs.year < rhs.year;
+  }
+  if (lhs.month != rhs.month) {
+    return lhs.month < rhs.month;
+  }
+  return lhs.day < rhs.day;
+}
 
 Date parseDate(const std::string& date) {
   Date result;
@@ -83,46 +94,36 @@ public:
   void earn(const Date& date, int amount) {
     int index = dateToIndex(date);
     m_earnings[index] += amount;
-
-    // auto itStart = m_earnings.begin() + dateToIndex(date);
-    // auto itStartAccum = m_accumEarnings.begin() + dateToIndex(date);
-
-    // for (int i = index; i < m_accumEarnings.size(); i++) {
-    //   m_accumEarnings[i] += amount;
-    // }
   }
 
   void cacheAccumEarning() {
     std::partial_sum(m_earnings.begin(), m_earnings.end(), m_accumEarnings.begin());
   }
 
-  int computeIncome(const Date& startDate, const Date& endDate) {
+  uint64_t computeIncome(const Date& startDate, const Date& endDate) {
+    if (endDate < startDate) {
+      return 0;
+    }
     int startIndex = dateToIndex(startDate);
     int endIndex = dateToIndex(endDate);
-    if (startIndex == 0) {
-      return m_accumEarnings[endIndex];
-    }
     return m_accumEarnings[endIndex] - m_accumEarnings[startIndex - 1];
   }
 
-  int getEarnedByDay(const Date& date) {
+  uint64_t getEarnedByDay(const Date& date) {
     return m_earnings[dateToIndex(date)];
   }
 
-  int getAccumEarnedByDay(const Date& date) {
+  uint64_t getAccumEarnedByDay(const Date& date) {
     return m_accumEarnings[dateToIndex(date)];
   }
 
 private:
-  std::vector<int> m_earnings;
-  std::vector<int> m_accumEarnings;
+  std::vector<uint64_t> m_earnings;
+  std::vector<uint64_t> m_accumEarnings;
 };
 
 
-
-
 #ifdef LOCAL_RUN
-
 
 void testBudgetEarn() {
   Budget budget;
@@ -139,67 +140,61 @@ void testBudgetEarn() {
 
 }
 
-void testBudgetAccumEarned() {
-  Budget budget;
-  Date date = {2000, 1, 29};
-  budget.earn(date, 20);
-
-  Date earnDay1 = {2000, 1, 28};
-  AssertEqual(budget.getAccumEarnedByDay(earnDay1), 0, "earned 0");
-  Date earnDay2 = {2000, 1, 29};
-  AssertEqual(budget.getAccumEarnedByDay(earnDay2), 20, "earned 20");
-
-  budget.earn(date, 20);
-  AssertEqual(budget.getAccumEarnedByDay(earnDay2), 40, "earned additional 20");
-
-  Date date2 = {2000, 1, 30};
-  budget.earn(date2, 20);
-  AssertEqual(budget.getAccumEarnedByDay(date2), 70, "accum earned 70");
-
-  Date date3 = {2000, 1, 31};
-  budget.earn(date3, 5);
-  AssertEqual(budget.getAccumEarnedByDay(date3), 75, "accum earned 75");
-
-  budget.earn(date2, 15);
-  AssertEqual(budget.getAccumEarnedByDay(date3), 90, "accum earned 90");
-}
 
 void testBudgetComputeIncome() {
   Budget budget;
-  Date date1 = {2000, 1, 2};
-  Date date2 = {2000, 1, 6};
-  Date date3 = {2000, 1, 3};
+  Date date1 = {1700, 1, 1};
+  Date date2 = {2000, 1, 1};
+  Date date3 = {2000, 1, 6};
+  Date date4 = {2000, 1, 10};
+  Date date4_1 = {2000, 2, 29};
+  Date date5 = {2001, 2, 2};
+  Date date6 = {2001, 3, 5};
+  Date date7 = {2002, 1, 2};
+  Date date8 = {2004, 2, 29};
+  Date date9 = {2005, 1, 2};
+  Date date10 = {2099, 12, 31};
 
-  budget.earn(date1, 20);
+  AssertEqual(budget.computeIncome(date1, date2), 0, "0");
+
   budget.earn(date2, 10);
-  budget.earn(date3, 10);
   budget.cacheAccumEarning();
 
-  Date startDate1 = {2000, 1, 1};
-  Date endDate1 = {2000, 1, 2};
+  AssertEqual(budget.computeIncome(date1, date2), 10, "date1 - date2: 10");
+  AssertEqual(budget.computeIncome(date3, date4), 0, "date3 - date4: 0");
+  AssertEqual(budget.computeIncome(date1, date10), 10, "date1 - date10: 10");
 
-  Date startDate2 = {2000, 1, 2};
-  Date endDate2 = {2000, 1, 6};
+  budget.earn(date2, 10);
+  budget.cacheAccumEarning();
+  AssertEqual(budget.computeIncome(date1, date2), 20, "date1 - date2: 20");
+  AssertEqual(budget.computeIncome(date3, date4), 0, "date3 - date4: 0");
+  AssertEqual(budget.computeIncome(date1, date10), 20, "date1 - date10: 20");
 
-  Date startDate3 = {2000, 1, 4};
-  Date endDate3 = {2000, 1, 5};
+  budget.earn(date1, 15);
+  budget.cacheAccumEarning();
+  AssertEqual(budget.computeIncome(date1, date2), 35, "date1 - date2: 35");
+  AssertEqual(budget.computeIncome(date3, date4), 0, "date3 - date4: 0");
+  AssertEqual(budget.computeIncome(date1, date10), 35, "date1 - date10: 35");
 
-  AssertEqual(budget.computeIncome(startDate1, endDate1), 20, "20");
-  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "40");
-  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "0");
-  AssertEqual(budget.computeIncome(endDate1, endDate1), 20, "20 one day earn");
+  budget.earn(date5, 20);
+  budget.cacheAccumEarning();
+  budget.earn(date6, 20);
+  budget.earn(date7, 20);
+  budget.cacheAccumEarning();
+  AssertEqual(budget.computeIncome(date1, date1), 15, "date1: 15");
+  AssertEqual(budget.computeIncome(date2, date2), 20, "date2: 20");
+  AssertEqual(budget.computeIncome(date5, date5), 20, "date5: 20");
+  AssertEqual(budget.computeIncome(date1, date5), 55, "date1 - date5: 55");
+  AssertEqual(budget.computeIncome(date1, date7), 95, "date1 - date7: 95");
 
+  AssertEqual(budget.computeIncome(date8, date9), 0, "date8 - date9: 0");
+  AssertEqual(budget.computeIncome(date10, date10), 0, "date10 - date10: 0");
 
+  AssertEqual(budget.computeIncome(date4_1, date4_1), 0, "date4_1 - date4_1: 0");
 
-  // Date date4 = {2000, 2, 1};
-  // Date date5 = {2000, 2, 2};
-
-  // budget.earn(date4, 5);
-  // budget.earn(date5, 5);
-  // budget.earn(date3, 10);
-  // budget.cacheAccumEarning();
-
+  AssertEqual(budget.computeIncome(date10, date1), 0, "date10 - date1: 0");
 }
+
 
 void testParseEarnCommand() {
   std::string line = "2000-1-2 22";
@@ -233,10 +228,9 @@ void testParseCountCommand() {
 void runTests() {
   TestRunner tr;
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
-  // tr.RunTest(testBudgetAccumEarned, "earn Budget method - accumulated earn: ");
   tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
-  // tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
-  // tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
+  tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
+  tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
 }
 
 #endif
