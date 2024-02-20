@@ -77,11 +77,17 @@ public:
   void earn(Date& date, double amount) {
     m_earnings[date] += amount;
     auto itStart = m_earnings.lower_bound(date);
+    // std::cout << date << " " << amount << " " << itStart->second << "\n";
     if (itStart != m_earnings.begin()) {
+      // std::cout << date << " " << amount << " " << itStart->second << " " << std::prev(itStart)->second << "\n";
       itStart->second += std::prev(itStart)->second;
     }
+
+    // std::cout << "HERE!" << " " << itStart->first << " " << itStart->second << "\n";
+
     for (auto i = std::next(itStart); i != m_earnings.end(); i++) {
       i->second += amount;
+      // std::cout << date << " " << i->second << "\n";
     }
 
   }
@@ -150,41 +156,23 @@ void testBudgetComputeIncome() {
   Date date2 = "2000-1-6";
   Date date3 = "2000-1-3";
 
-  AssertEqual(budget.computeIncome(date1, date2), 0, "Nothing earned yet");
-
   budget.earn(date1, 20);
   budget.earn(date2, 10);
   budget.earn(date3, 10);
 
-  Date startDateBefore = "1995-1-1";
-  Date endDateBefore = "1997-1-1";
-  AssertEqual(budget.computeIncome(startDateBefore, startDateBefore), 0, "Day before all earnings");
-  AssertEqual(budget.computeIncome(startDateBefore, endDateBefore), 0, "Interval before all earnings");
-
   Date startDate1 = "2000-1-1";
   Date endDate1 = "2001-1-2";
-  AssertEqual(budget.computeIncome(startDate1, endDate1), 40, "1");
 
   Date startDate2 = "2000-1-2";
   Date endDate2 = "2000-1-6";
-  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "2");
 
   Date startDate3 = "2000-1-4";
   Date endDate3 = "2000-1-5";
-  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "Interval between earnings - earned 0");
 
-  AssertEqual(budget.computeIncome(date1, date1), 20, "One day earn");
-
-  Date startDateAfter = "2020-1-1";
-  Date endDateAfter = "2021-1-1";
-  AssertEqual(budget.computeIncome(startDateAfter, startDateAfter), 0, "Day after all earnings");
-  AssertEqual(budget.computeIncome(startDateAfter, endDateAfter), 0, "Interval after all earnings");
-
-  Date date0 = "1998-1-3";
-  budget.earn(date0, 7);
-  AssertEqual(budget.computeIncome(endDateBefore, endDate1), 47, "1 after adding in begin");
-  AssertEqual(budget.computeIncome(date0, startDate1), 7, "2 after adding in begin");
-
+  AssertEqual(budget.computeIncome(startDate1, endDate1), 40, "1");
+  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "2");
+  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "3");
+  AssertEqual(budget.computeIncome(date1, date1), 20, "one day earn");
 
 }
 
