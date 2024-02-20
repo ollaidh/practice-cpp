@@ -71,7 +71,10 @@ std::pair<Date, Date> parseCountCommand(const std::string& input) {
 
 class Budget {
 public:
+  Budget(){}
+
   void earn(const Date& date, double amount) {
+    // int index = dateToIndex(date);
     m_earnings[date] += amount;
   }
 
@@ -86,6 +89,9 @@ public:
     if (itStart == std::prev(itEnd)) {
       return itStart->second;
     }
+
+    // std::cout << itStart->first.year << " " << (itEnd==m_earnings.end()) << "\n";
+
 
     double result = std::accumulate(itStart, itEnd, 0.0,
             [](double acc, const auto& pair) {
