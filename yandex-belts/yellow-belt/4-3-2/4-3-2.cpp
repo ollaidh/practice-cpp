@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstddef>
 #include <exception>
 #include <iostream>
 #include <iterator>
@@ -86,14 +87,18 @@ public:
     auto itStart = m_earnings.begin() + dateToIndex(date);
     auto itStartAccum = m_accumEarnings.begin() + dateToIndex(date);
 
-    std::partial_sum(itStart, m_earnings.end(), itStartAccum);
+    for (int i = index; i < m_accumEarnings.size(); i++) {
+      m_accumEarnings[i] += amount;
+    }
   }
 
   int computeIncome(const Date& startDate, const Date& endDate) {
-    if (dateToIndex(startDate) == 0) {
-      return m_accumEarnings[dateToIndex(endDate)] - m_accumEarnings[dateToIndex(startDate)];
+    int startIndex = dateToIndex(startDate);
+    int endIndex = dateToIndex(endDate);
+    if (startIndex == 0) {
+      return m_accumEarnings[endIndex];
     }
-    return m_accumEarnings[dateToIndex(endDate)] - m_accumEarnings[dateToIndex(startDate) - 1];
+    return m_accumEarnings[endIndex] - m_accumEarnings[startIndex - 1];
   }
 
   int getEarnedByDay(const Date& date) {
@@ -213,6 +218,7 @@ void testParseCountCommand() {
 void runTests() {
   TestRunner tr;
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
+  // tr.RunTest(testBudgetAccumEarned, "earn Budget method - accumulated earn: ");
   tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
   // tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
   // tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
