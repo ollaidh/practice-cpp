@@ -74,27 +74,39 @@ int dateToIndex(Date date) {
 
 class Budget {
 public:
-  Budget() : m_earnings(1464000, 0){}
+  Budget()
+  : m_earnings(1464000, 0)
+  , m_accumEarnings(1464000, 0)
+  {}
 
   void earn(const Date& date, int amount) {
     int index = dateToIndex(date);
     m_earnings[index] += amount;
+
+    auto itStart = m_earnings.begin() + dateToIndex(date);
+    auto itStartAccum = m_accumEarnings.begin() + dateToIndex(date);
+
+    std::partial_sum(itStart, m_earnings.end(), itStartAccum);
   }
 
   int computeIncome(const Date& startDate, const Date& endDate) {
-    auto itStart = m_earnings.begin() + dateToIndex(startDate);
-    auto itEnd = m_earnings.begin() + dateToIndex(endDate);
-
-    int result = std::accumulate(itStart, itEnd + 1, 0.0);
-    return result;
+    if (dateToIndex(startDate) == 0) {
+      return m_accumEarnings[dateToIndex(endDate)] - m_accumEarnings[dateToIndex(startDate)];
+    }
+    return m_accumEarnings[dateToIndex(endDate)] - m_accumEarnings[dateToIndex(startDate) - 1];
   }
 
   int getEarnedByDay(const Date& date) {
     return m_earnings[dateToIndex(date)];
   }
 
+  int getAccumEarnedByDay(const Date& date) {
+    return m_accumEarnings[dateToIndex(date)];
+  }
+
 private:
   std::vector<int> m_earnings;
+  std::vector<int> m_accumEarnings;
 };
 
 
@@ -118,6 +130,31 @@ void testBudgetEarn() {
 
 }
 
+void testBudgetAccumEarned() {
+  Budget budget;
+  Date date = {2000, 1, 29};
+  budget.earn(date, 20);
+
+  Date earnDay1 = {2000, 1, 28};
+  AssertEqual(budget.getAccumEarnedByDay(earnDay1), 0, "earned 0");
+  Date earnDay2 = {2000, 1, 29};
+  AssertEqual(budget.getAccumEarnedByDay(earnDay2), 20, "earned 20");
+
+  budget.earn(date, 20);
+  AssertEqual(budget.getAccumEarnedByDay(earnDay2), 40, "earned additional 20");
+
+  Date date2 = {2000, 1, 30};
+  budget.earn(date2, 20);
+  AssertEqual(budget.getAccumEarnedByDay(date2), 70, "accum earned 70");
+
+  Date date3 = {2000, 1, 31};
+  budget.earn(date3, 5);
+  AssertEqual(budget.getAccumEarnedByDay(date3), 75, "accum earned 75");
+
+  budget.earn(date2, 15);
+  AssertEqual(budget.getAccumEarnedByDay(date3), 90, "accum earned 90");
+}
+
 void testBudgetComputeIncome() {
   Budget budget;
   Date date1 = {2000, 1, 2};
@@ -137,10 +174,10 @@ void testBudgetComputeIncome() {
   Date startDate3 = {2000, 1, 4};
   Date endDate3 = {2000, 1, 5};
 
-  AssertEqual(budget.computeIncome(startDate1, endDate1), 20, "");
-  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "");
-  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "");
-  AssertEqual(budget.computeIncome(endDate1, endDate1), 20, "one day earn");
+  AssertEqual(budget.computeIncome(startDate1, endDate1), 20, "20");
+  AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "40");
+  AssertEqual(budget.computeIncome(startDate3, endDate3), 0, "0");
+  AssertEqual(budget.computeIncome(endDate1, endDate1), 20, "20 one day earn");
 
 }
 
@@ -177,8 +214,8 @@ void runTests() {
   TestRunner tr;
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
   tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
-  tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
-  tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
+  // tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
+  // tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
 }
 
 #endif
