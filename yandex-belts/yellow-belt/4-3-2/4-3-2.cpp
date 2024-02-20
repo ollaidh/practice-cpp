@@ -89,18 +89,20 @@ public:
   Budget()
   : m_earnings(1464000, 0)
   , m_accumEarnings(1464000, 0)
+  , m_dirty(false)
   {}
 
   void earn(const Date& date, int amount) {
     int index = dateToIndex(date);
     m_earnings[index] += amount;
-  }
-
-  void cacheAccumEarning() {
-    std::partial_sum(m_earnings.begin(), m_earnings.end(), m_accumEarnings.begin());
+    m_dirty = true;
   }
 
   uint64_t computeIncome(const Date& startDate, const Date& endDate) {
+    if (m_dirty) {
+      std::partial_sum(m_earnings.begin(), m_earnings.end(), m_accumEarnings.begin());
+      m_dirty = false;
+    }
     if (endDate < startDate) {
       return 0;
     }
@@ -120,6 +122,7 @@ public:
 private:
   std::vector<uint64_t> m_earnings;
   std::vector<uint64_t> m_accumEarnings;
+  bool m_dirty;
 };
 
 
@@ -158,29 +161,24 @@ void testBudgetComputeIncome() {
   AssertEqual(budget.computeIncome(date1, date2), 0, "0");
 
   budget.earn(date2, 10);
-  budget.cacheAccumEarning();
 
   AssertEqual(budget.computeIncome(date1, date2), 10, "date1 - date2: 10");
   AssertEqual(budget.computeIncome(date3, date4), 0, "date3 - date4: 0");
   AssertEqual(budget.computeIncome(date1, date10), 10, "date1 - date10: 10");
 
   budget.earn(date2, 10);
-  budget.cacheAccumEarning();
   AssertEqual(budget.computeIncome(date1, date2), 20, "date1 - date2: 20");
   AssertEqual(budget.computeIncome(date3, date4), 0, "date3 - date4: 0");
   AssertEqual(budget.computeIncome(date1, date10), 20, "date1 - date10: 20");
 
   budget.earn(date1, 15);
-  budget.cacheAccumEarning();
   AssertEqual(budget.computeIncome(date1, date2), 35, "date1 - date2: 35");
   AssertEqual(budget.computeIncome(date3, date4), 0, "date3 - date4: 0");
   AssertEqual(budget.computeIncome(date1, date10), 35, "date1 - date10: 35");
 
   budget.earn(date5, 20);
-  budget.cacheAccumEarning();
   budget.earn(date6, 20);
   budget.earn(date7, 20);
-  budget.cacheAccumEarning();
   AssertEqual(budget.computeIncome(date1, date1), 15, "date1: 15");
   AssertEqual(budget.computeIncome(date2, date2), 20, "date2: 20");
   AssertEqual(budget.computeIncome(date5, date5), 20, "date5: 20");
@@ -252,8 +250,6 @@ int main() {
     auto [date, amount] = parseEarnCommand(line);
     budget.earn(date, amount);
   }
-
-  budget.cacheAccumEarning();
 
   int nCountActions;
   std::getline(std::cin, line);
