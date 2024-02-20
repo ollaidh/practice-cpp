@@ -8,7 +8,6 @@
 #include <vector>
 #include <string>
 #include <ctime>
-#include <map>
 
 #ifdef LOCAL_RUN
 #include "yandexTest.h"
@@ -29,16 +28,6 @@ struct Date {
   int month;
   int day;
 };
-
-bool operator<(const Date& lhs, const Date& rhs) {
-  if (lhs.year < rhs.year) {
-    return true;
-  }
-  if (lhs.month < rhs.month) {
-    return true;
-  }
-  return lhs.day < rhs.day;
-}
 
 Date parseDate(const std::string& date) {
   Date result;
@@ -85,30 +74,27 @@ int dateToIndex(Date date) {
 
 class Budget {
 public:
-  Budget(){}
+  Budget() : m_earnings(1464000, 0){}
 
   void earn(const Date& date, double amount) {
-    // int index = dateToIndex(date);
-    m_earnings[date] += amount;
+    int index = dateToIndex(date);
+    m_earnings[index] += amount;
   }
 
   double computeIncome(const Date& startDate, const Date& endDate) {
-    auto itStart = m_earnings.lower_bound(startDate);
-    auto itEnd = m_earnings.upper_bound(endDate);
+    auto itStart = m_earnings.begin() + dateToIndex(startDate);
+    auto itEnd = m_earnings.begin() + dateToIndex(endDate);
 
-    double result = std::accumulate(itStart, itEnd, 0.0,
-            [](double acc, const auto& pair) {
-                return acc + pair.second;
-            });
+    double result = std::accumulate(itStart, itEnd + 1, 0.0);
     return result;
   }
 
   double getEarnedByDay(const Date& date) {
-    return m_earnings[date];
+    return m_earnings[dateToIndex(date)];
   }
 
 private:
-  std::map<Date, double> m_earnings;
+  std::vector<double> m_earnings;
 };
 
 
