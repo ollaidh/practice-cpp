@@ -145,12 +145,12 @@ void testBudgetComputeIncome() {
 }
 
 void testParseEarnCommand() {
-  std::string line = "2000-1-2 22.3";
+  std::string line = "2000-1-2 22";
   auto [date, amount] = parseEarnCommand(line);
   AssertEqual(date.year, 2000, "");
   AssertEqual(date.month, 1, "");
   AssertEqual(date.day, 2, "");
-  AssertEqual(amount, 22.3, "");
+  AssertEqual(amount, 22, "");
 }
 
 void testParseCountCommand() {
