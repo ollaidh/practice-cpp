@@ -14,44 +14,42 @@
 #include "yandexTest.h"
 #endif
 
-// struct Date {
-//   Date()
-//   : year(-1)
-//   , month(-1)
-//   , day(-1)
-//   {};
-//   Date(int newYear, int newMonth, int newDay)
-//   : year(newYear)
-//   , month(newMonth)
-//   , day(newDay)
-//   {}
-//   int year;
-//   int month;
-//   int day;
-// };
+struct Date {
+  Date()
+  : year(-1)
+  , month(-1)
+  , day(-1)
+  {};
+  Date(int newYear, int newMonth, int newDay)
+  : year(newYear)
+  , month(newMonth)
+  , day(newDay)
+  {}
+  int year;
+  int month;
+  int day;
+};
 
-using Date = std::string;
+bool operator<(const Date& lhs, const Date& rhs) {
+  if (lhs.year != rhs.year) {
+    return lhs.year < rhs.year;
+  }
+  if (lhs.month != rhs.month) {
+    return lhs.month < rhs.month;
+  }
+  return lhs.day < rhs.day;
+}
 
-// bool operator<(const Date& lhs, const Date& rhs) {
-//   if (lhs.year != rhs.year) {
-//     return lhs.year < rhs.year;
-//   }
-//   if (lhs.month != rhs.month) {
-//     return lhs.month < rhs.month;
-//   }
-//   return lhs.day < rhs.day;
-// }
-
-// Date parseDate(const std::string& date) {
-//   Date result;
-//   std::stringstream ss{date};
-//   ss >> result.year;
-//   ss.ignore(1);
-//   ss >> result.month;
-//   ss.ignore(1);
-//   ss >> result.day;
-//   return result;
-// }
+Date parseDate(const std::string& date) {
+  Date result;
+  std::stringstream ss{date};
+  ss >> result.year;
+  ss.ignore(1);
+  ss >> result.month;
+  ss.ignore(1);
+  ss >> result.day;
+  return result;
+}
 
 std::pair<Date, double> parseEarnCommand(const std::string& input) {
   std::stringstream ss{input};
@@ -59,7 +57,7 @@ std::pair<Date, double> parseEarnCommand(const std::string& input) {
   double amount;
   ss >> start;
   ss >> amount;
-  return {start, amount};
+  return {parseDate(start), amount};
 }
 
 std::pair<Date, Date> parseCountCommand(const std::string& input) {
@@ -68,28 +66,13 @@ std::pair<Date, Date> parseCountCommand(const std::string& input) {
   std::string end;
   ss >> start;
   ss >> end;
-  return {start, end};
+  return {parseDate(start), parseDate(end)};
 }
 
 class Budget {
 public:
-
-  void earn(Date& date, double amount) {
+  void earn(const Date& date, double amount) {
     m_earnings[date] += amount;
-    auto itStart = m_earnings.lower_bound(date);
-    // std::cout << date << " " << amount << " " << itStart->second << "\n";
-    if (itStart != m_earnings.begin()) {
-      // std::cout << date << " " << amount << " " << itStart->second << " " << std::prev(itStart)->second << "\n";
-      itStart->second += std::prev(itStart)->second;
-    }
-
-    // std::cout << "HERE!" << " " << itStart->first << " " << itStart->second << "\n";
-
-    for (auto i = std::next(itStart); i != m_earnings.end(); i++) {
-      i->second += amount;
-      // std::cout << date << " " << i->second << "\n";
-    }
-
   }
 
   double computeIncome(const Date& startDate, const Date& endDate) {
@@ -104,16 +87,15 @@ public:
       return itStart->second;
     }
 
-    double result = itEnd->second - itStart->second;
+    double result = std::accumulate(itStart, itEnd, 0.0,
+            [](double acc, const auto& pair) {
+                return acc + pair.second;
+            });
     return result;
   }
 
-  double getEarnedByDay(const Date& date) const{
-    if (m_earnings.find(date) != m_earnings.end()) {
-      return m_earnings.at(date);
-    } else {
-      return 0;
-    }
+  double getEarnedByDay(const Date& date) {
+    return m_earnings[date];
   }
 
 private:
@@ -128,41 +110,37 @@ private:
 
 void testBudgetEarn() {
   Budget budget;
-  Date date = "2000-1-29";
-  budget.earn(date, 20);
+  Date date = {2000, 1, 29};
+  budget.earn(date, 20.2);
 
-  Date earnDay1 = "2000-1-28";
+  Date earnDay1 = {2000, 1, 28};
   AssertEqual(budget.getEarnedByDay(earnDay1), 0, "earned 0");
-  Date earnDay2 = "2000-1-29";
-  AssertEqual(budget.getEarnedByDay(earnDay2), 20, "earned 20");
+  Date earnDay2 = {2000, 1, 29};
+  AssertEqual(budget.getEarnedByDay(earnDay2), 20.2, "earned 20.2");
 
-  budget.earn(date, 5);
-  AssertEqual(budget.getEarnedByDay(earnDay2), 25, "earned additional 5");
-
-  date = "2000-2-1";
-  budget.earn(date, 10);
-  AssertEqual(budget.getEarnedByDay(date), 35, "earned 35");
+  budget.earn(date, 20.2);
+  AssertEqual(budget.getEarnedByDay(earnDay2), 40.4, "earned additional 20.2");
 
 }
 
 void testBudgetComputeIncome() {
   Budget budget;
-  Date date1 = "2000-1-2";
-  Date date2 = "2000-1-6";
-  Date date3 = "2000-1-3";
+  Date date1 = {2000, 1, 2};
+  Date date2 = {2000, 1, 6};
+  Date date3 = {2000, 1, 3};
 
   budget.earn(date1, 20);
   budget.earn(date2, 10);
   budget.earn(date3, 10);
 
-  Date startDate1 = "2000-1-1";
-  Date endDate1 = "2001-1-2";
+  Date startDate1 = {2000, 1, 1};
+  Date endDate1 = {2001, 1, 2};
 
-  Date startDate2 = "2000-1-2";
-  Date endDate2 = "2000-1-6";
+  Date startDate2 = {2000, 1, 2};
+  Date endDate2 = {2000, 1, 6};
 
-  Date startDate3 = "2000-1-4";
-  Date endDate3 = "2000-1-5";
+  Date startDate3 = {2000, 1, 4};
+  Date endDate3 = {2000, 1, 5};
 
   AssertEqual(budget.computeIncome(startDate1, endDate1), 40, "1");
   AssertEqual(budget.computeIncome(startDate2, endDate2), 40, "2");
@@ -171,41 +149,41 @@ void testBudgetComputeIncome() {
 
 }
 
-// void testParseEarnCommand() {
-//   std::string line = "2000-1-2 22.3";
-//   auto [date, amount] = parseEarnCommand(line);
-//   AssertEqual(date.year, 2000, "");
-//   AssertEqual(date.month, 1, "");
-//   AssertEqual(date.day, 2, "");
-//   AssertEqual(amount, 22.3, "");
-// }
+void testParseEarnCommand() {
+  std::string line = "2000-1-2 22.3";
+  auto [date, amount] = parseEarnCommand(line);
+  AssertEqual(date.year, 2000, "");
+  AssertEqual(date.month, 1, "");
+  AssertEqual(date.day, 2, "");
+  AssertEqual(amount, 22.3, "");
+}
 
-// void testParseCountCommand() {
-//   std::string line = "2000-1-2 2001-11-12";
-//   auto [dateStart, dateEnd] = parseCountCommand(line);
-//   AssertEqual(dateStart.year, 2000, "");
-//   AssertEqual(dateStart.month, 1, "");
-//   AssertEqual(dateStart.day, 2, "");
-//   AssertEqual(dateEnd.year, 2001, "");
-//   AssertEqual(dateEnd.month, 11, "");
-//   AssertEqual(dateEnd.day, 12, "");
+void testParseCountCommand() {
+  std::string line = "2000-1-2 2001-11-12";
+  auto [dateStart, dateEnd] = parseCountCommand(line);
+  AssertEqual(dateStart.year, 2000, "");
+  AssertEqual(dateStart.month, 1, "");
+  AssertEqual(dateStart.day, 2, "");
+  AssertEqual(dateEnd.year, 2001, "");
+  AssertEqual(dateEnd.month, 11, "");
+  AssertEqual(dateEnd.day, 12, "");
 
-//   line = "2000-1-2";
-//   auto [dateStart2, dateEnd2] = parseCountCommand(line);
-//   AssertEqual(dateStart2.year, 2000, "");
-//   AssertEqual(dateStart2.month, 1, "");
-//   AssertEqual(dateStart2.day, 2, "");
-//   AssertEqual(dateEnd2.year, -1, "");
-//   AssertEqual(dateEnd2.month, -1, "");
-//   AssertEqual(dateEnd2.day, -1, "");
-// }
+  line = "2000-1-2";
+  auto [dateStart2, dateEnd2] = parseCountCommand(line);
+  AssertEqual(dateStart2.year, 2000, "");
+  AssertEqual(dateStart2.month, 1, "");
+  AssertEqual(dateStart2.day, 2, "");
+  AssertEqual(dateEnd2.year, -1, "");
+  AssertEqual(dateEnd2.month, -1, "");
+  AssertEqual(dateEnd2.day, -1, "");
+}
 
 void runTests() {
   TestRunner tr;
   tr.RunTest(testBudgetEarn, "earn Budget method: ");
-  // tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
-  // tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
-  // tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
+  tr.RunTest(testBudgetComputeIncome, "computeIncome Budget method: ");
+  tr.RunTest(testParseEarnCommand, "Parsing Earn input command: ");
+  tr.RunTest(testParseCountCommand, "Parsing Count input command: ");
 }
 
 #endif
@@ -234,7 +212,7 @@ int main() {
   for (int i = 0; i < nCountActions; i++) {
     std::getline(std::cin, line);
     auto [start, end] = parseCountCommand(line);
-    if (end.empty()) {
+    if (end.year == -1) {
       end = start;
     }
     std::cout.precision(25);
