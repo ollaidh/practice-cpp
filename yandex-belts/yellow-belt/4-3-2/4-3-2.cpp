@@ -94,15 +94,13 @@ public:
       return 0;
     }
 
-
-    if (itStart == std::prev(itEnd) && itStart != m_earnings.begin()) {
-      return itStart->second - std::prev(itStart)->second;
-    }
-
     if (itStart == m_earnings.begin()) {
       return std::prev(itEnd)->second;
     }
 
+    if (itStart == std::prev(itEnd)) {
+      return itStart->second;
+    }
 
     double result = std::prev(itEnd)->second - itStart->second;
 
@@ -117,12 +115,8 @@ public:
     }
   }
 
-  std::map<std::string, int> getAllEarnings() const {
-    return m_earnings;
-  }
-
 private:
-  std::map<Date, int> m_earnings;
+  std::map<Date, double> m_earnings;
 };
 
 
@@ -194,9 +188,6 @@ void testBudgetComputeIncome() {
 
   Date date0 = "1998-1-3";
   budget.earn(date0, 7);
-  for (const auto& [key, value] : budget.getAllEarnings()) {
-    std:: cout << key << " " << value << " | ";
-  }
   AssertEqual(budget.computeIncome(endDateBefore, endDate1), 47, "1 after adding in begin");
   AssertEqual(budget.computeIncome(date0, startDate1), 7, "2 after adding in begin");
 
