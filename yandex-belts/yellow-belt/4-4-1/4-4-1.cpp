@@ -3,29 +3,35 @@
 #include <set>
 #include <iostream>
 
-using Iter = std::set<int>::iterator;
+using Iter = std::set<int>::const_iterator;
 
-Iter FindNearestElement(std::set<int>& numbers, int number) {
+Iter FindNearestElement(const std::set<int>& numbers, int number) {
   if (numbers.empty()) {
     return numbers.end();
   }
 
-  auto lbIt = lower_bound(numbers.begin(), numbers.end(), number);
-  auto itPrev = std::prev(lbIt);
+  auto lbIt = numbers.lower_bound( number);
+
   if (lbIt == numbers.end()) {
-    return itPrev;
+    return std::prev(lbIt);
   }
-  if (*lbIt == number || lbIt == numbers.begin()) {
+
+  auto valLB = *lbIt;
+
+  if (valLB == number || lbIt == numbers.begin()) {
     return lbIt;
   }
 
-  if (number - *itPrev < *lbIt - number) {
+  auto itPrev = std::prev(lbIt);
+  auto valPrev = *itPrev;
+
+  if (number - valPrev < valLB - number) {
     return itPrev;
   }
-  if (number - *itPrev > *lbIt - number) {
+  if (number - valPrev > valLB - number) {
     return lbIt;
   }
-  if (*itPrev < *lbIt) {
+  if (valPrev < valLB) {
     return itPrev;
   }
   return lbIt;
