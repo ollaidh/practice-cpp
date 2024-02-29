@@ -6,7 +6,7 @@ using namespace std;
 
 class Person {
 public:
-  virtual void Walk(const string& destintion) const = 0;
+  virtual void Walk(const string& destination) const = 0;
 };
 
 class Student : public Person {
@@ -86,7 +86,7 @@ public:
 };
 
 void VisitPlaces(const Person& person, const vector<string>& places) {
-    for (auto p : places) {
+    for (const auto& p : places) {
         person.Walk(p);
     }
 }
