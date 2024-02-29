@@ -9,7 +9,7 @@ public:
   virtual void Walk(const string& destintion) = 0;
 };
 
-class Student : Person {
+class Student : public Person {
 public:
 
     Student(const string& name, const string& favouriteSong)
@@ -37,7 +37,7 @@ public:
 };
 
 
-class Teacher : Person {
+class Teacher : public Person {
 public:
 
     Teacher(const string& name, const string& subject)
@@ -59,7 +59,7 @@ public:
 };
 
 
-class Policeman : Person {
+class Policeman : public Person {
 public:
     Policeman(const string& name)
     : Name(name)
@@ -85,23 +85,30 @@ public:
     string Name;
 };
 
-void VisitPlaces(Teacher t, vector<string> places) {
+void VisitPlaces(Person& human, vector<string> places) {
     for (auto p : places) {
-        t.Walk(p);
+        human.Walk(p);
     }
 }
 
-void VisitPlaces(Student s, vector<string> places) {
-    for (auto p : places) {
-        s.Walk(p);
-    }
-}
 
-void VisitPlaces(Policeman pol, vector<string> places) {
-    for (auto p : places) {
-        pol.Walk(p);
-    }
-}
+// void VisitPlaces(Teacher t, vector<string> places) {
+//     for (auto p : places) {
+//         t.Walk(p);
+//     }
+// }
+
+// void VisitPlaces(Student s, vector<string> places) {
+//     for (auto p : places) {
+//         s.Walk(p);
+//     }
+// }
+
+// void VisitPlaces(Policeman pol, vector<string> places) {
+//     for (auto p : places) {
+//         pol.Walk(p);
+//     }
+// }
 
 
 int main() {
