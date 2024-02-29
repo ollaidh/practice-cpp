@@ -6,7 +6,7 @@ using namespace std;
 
 class Person {
 public:
-  virtual void Walk(const string& destintion) = 0;
+  virtual void Walk(const string& destintion) const = 0;
 };
 
 class Student : public Person {
@@ -18,16 +18,16 @@ public:
     {
     }
 
-    void Learn() {
+    void Learn() const{
         cout << "Student: " << Name << " learns" << endl;
     }
 
-    void Walk(const string& destination) override {
+    void Walk(const string& destination) const override {
         cout << "Student: " << Name << " walks to: " << destination << endl;
         cout << "Student: " << Name << " sings a song: " << FavouriteSong << endl;
     }
 
-    void SingSong() {
+    void SingSong() const {
         cout << "Student: " << Name << " sings a song: " << FavouriteSong << endl;
     }
 
@@ -45,11 +45,11 @@ public:
     , Subject(subject)
     {}
 
-    void Teach() {
+    void Teach() const {
         cout << "Teacher: " << Name << " teaches: " << Subject << endl;
     }
 
-    void Walk(const string& destination) override {
+    void Walk(const string& destination) const override {
         cout << "Teacher: " << Name << " walks to: " << destination << endl;
     }
 
@@ -65,19 +65,19 @@ public:
     : Name(name)
     {}
 
-    void Check(const Teacher& t) {
+    void Check(const Teacher& t) const {
         cout << "Policeman: " << Name << " checks Teacher. Teacher's name is: " << t.Name << endl;
     }
 
-    void Check(const Student& s) {
+    void Check(const Student& s) const {
         cout << "Policeman: " << Name << " checks Student. Student's name is: " << s.Name << endl;
     }
 
-    void Check(const Policeman& p) {
+    void Check(const Policeman& p) const {
         cout << "Policeman: " << Name << " checks Policeman. Policeman's name is: " << p.Name << endl;
     }
 
-    void Walk(const string& destination) override {
+    void Walk(const string& destination) const override {
         cout << "Policeman: " << Name << " walks to: " << destination << endl;
     }
 
@@ -85,31 +85,11 @@ public:
     string Name;
 };
 
-void VisitPlaces(Person& human, vector<string> places) {
+void VisitPlaces(const Person& person, const vector<string>& places) {
     for (auto p : places) {
-        human.Walk(p);
+        person.Walk(p);
     }
 }
-
-
-// void VisitPlaces(Teacher t, vector<string> places) {
-//     for (auto p : places) {
-//         t.Walk(p);
-//     }
-// }
-
-// void VisitPlaces(Student s, vector<string> places) {
-//     for (auto p : places) {
-//         s.Walk(p);
-//     }
-// }
-
-// void VisitPlaces(Policeman pol, vector<string> places) {
-//     for (auto p : places) {
-//         pol.Walk(p);
-//     }
-// }
-
 
 int main() {
     Teacher t("Jim", "Math");
