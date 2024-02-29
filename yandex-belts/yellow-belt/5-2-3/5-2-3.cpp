@@ -4,12 +4,12 @@
 
 using namespace std;
 
-class Human {
+class Person {
 public:
   virtual void Walk(const string& destintion) = 0;
 };
 
-class Student : Human{
+class Student : Person {
 public:
 
     Student(const string& name, const string& favouriteSong)
@@ -37,7 +37,7 @@ public:
 };
 
 
-class Teacher : Human{
+class Teacher : Person {
 public:
 
     Teacher(const string& name, const string& subject)
@@ -59,7 +59,7 @@ public:
 };
 
 
-class Policeman : Human {
+class Policeman : Person {
 public:
     Policeman(const string& name)
     : Name(name)
@@ -84,7 +84,6 @@ public:
 public:
     string Name;
 };
-
 
 void VisitPlaces(Teacher t, vector<string> places) {
     for (auto p : places) {
