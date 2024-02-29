@@ -4,7 +4,12 @@
 
 using namespace std;
 
-class Student {
+class Human {
+public:
+  virtual void Walk(const string& destintion) = 0;
+};
+
+class Student : Human{
 public:
 
     Student(string name, string favouriteSong) {
@@ -16,7 +21,7 @@ public:
         cout << "Student: " << Name << " learns" << endl;
     }
 
-    void Walk(string destination) {
+    void Walk(const string& destination) override {
         cout << "Student: " << Name << " walks to: " << destination << endl;
         cout << "Student: " << Name << " sings a song: " << FavouriteSong << endl;
     }
@@ -31,7 +36,7 @@ public:
 };
 
 
-class Teacher {
+class Teacher : Human{
 public:
 
     Teacher(string name, string subject) {
@@ -43,7 +48,7 @@ public:
         cout << "Teacher: " << Name << " teaches: " << Subject << endl;
     }
 
-    void Walk(string destination) {
+    void Walk(const string& destination) override {
         cout << "Teacher: " << Name << " walks to: " << destination << endl;
     }
 
@@ -53,7 +58,7 @@ public:
 };
 
 
-class Policeman {
+class Policeman : Human {
 public:
     Policeman(string name) {
         Name = name;
@@ -71,7 +76,7 @@ public:
         cout << "Policeman: " << Name << " checks Policeman. Policeman's name is: " << p.Name << endl;
     }
 
-    void Walk(string destination) {
+    void Walk(const string& destination) override {
         cout << "Policeman: " << Name << " walks to: " << destination << endl;
     }
 
