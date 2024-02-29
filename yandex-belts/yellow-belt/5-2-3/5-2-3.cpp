@@ -65,15 +65,15 @@ public:
     : Name(name)
     {}
 
-    void Check(Teacher t) {
+    void Check(const Teacher& t) {
         cout << "Policeman: " << Name << " checks Teacher. Teacher's name is: " << t.Name << endl;
     }
 
-    void Check(Student s) {
+    void Check(const Student& s) {
         cout << "Policeman: " << Name << " checks Student. Student's name is: " << s.Name << endl;
     }
 
-    void Check(Policeman p) {
+    void Check(const Policeman& p) {
         cout << "Policeman: " << Name << " checks Policeman. Policeman's name is: " << p.Name << endl;
     }
 
