@@ -12,9 +12,10 @@ public:
 class Student : Human{
 public:
 
-    Student(string name, string favouriteSong) {
-        Name = name;
-        FavouriteSong = favouriteSong;
+    Student(const string& name, const string& favouriteSong)
+    : Name(name)
+    , FavouriteSong(favouriteSong)
+    {
     }
 
     void Learn() {
@@ -39,10 +40,10 @@ public:
 class Teacher : Human{
 public:
 
-    Teacher(string name, string subject) {
-        Name = name;
-        Subject = subject;
-    }
+    Teacher(const string& name, const string& subject)
+    : Name(name)
+    , Subject(subject)
+    {}
 
     void Teach() {
         cout << "Teacher: " << Name << " teaches: " << Subject << endl;
@@ -60,9 +61,9 @@ public:
 
 class Policeman : Human {
 public:
-    Policeman(string name) {
-        Name = name;
-    }
+    Policeman(const string& name)
+    : Name(name)
+    {}
 
     void Check(Teacher t) {
         cout << "Policeman: " << Name << " checks Teacher. Teacher's name is: " << t.Name << endl;
