@@ -1,3 +1,5 @@
+#include <iostream>
+
 class Date {
 public:
     Date();
@@ -13,3 +15,5 @@ private:
     int m_month;
     int m_day;
 };
+
+Date parseDate(const std::string& line);

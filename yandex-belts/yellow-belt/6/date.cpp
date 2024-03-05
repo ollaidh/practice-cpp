@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 Date::Date()
 {
@@ -19,36 +20,64 @@ Date::Date(int year, int month, int day)
 }
 
 int Date::GetYear() const {
-return m_year;
+    return m_year;
 }
 
 int Date::GetMonth() const {
-return m_month;
+    return m_month;
 }
 
 int Date::GetDay() const {
-return m_day;
+    return m_day;
 }
 
 bool operator<(const Date& lhs, const Date& rhs) {
-  if (lhs.GetYear() != rhs.GetYear()) {
-    return lhs.GetYear() < rhs.GetYear();
-  }
-  if (lhs.GetMonth() != rhs.GetMonth()) {
-    return lhs.GetMonth() < rhs.GetMonth();
-  }
-  return lhs.GetDay() < rhs.GetDay();
+    if (lhs.GetYear() != rhs.GetYear()) {
+        return lhs.GetYear() < rhs.GetYear();
+    }
+    if (lhs.GetMonth() != rhs.GetMonth()) {
+        return lhs.GetMonth() < rhs.GetMonth();
+    }
+    return lhs.GetDay() < rhs.GetDay();
 }
 
 std::ostream& operator<<(std::ostream& stream, const Date& date) {
-  stream << std::setw(4);
-  stream << std::setfill('0');
-  stream << date.GetYear() << "-";
-  stream << std::setw(2);
-  stream << std::setfill('0');
-  stream << date.GetMonth() << "-";
-  stream << std::setw(2);
-  stream << std::setfill('0');
-  stream << date.GetDay();
-  return stream;
+    stream << std::setw(4);
+    stream << std::setfill('0');
+    stream << date.GetYear() << "-";
+    stream << std::setw(2);
+    stream << std::setfill('0');
+    stream << date.GetMonth() << "-";
+    stream << std::setw(2);
+    stream << std::setfill('0');
+    stream << date.GetDay();
+    return stream;
+}
+
+Date parseDate(const std::string& line) {
+    std::istringstream sstream;
+    sstream.str(line);
+    int year, month, day;
+
+    if (!(sstream >> year))
+        throw std::runtime_error("Wrong date format: " + line);
+
+    if (sstream.peek() != '-')
+        throw std::runtime_error("Wrong date format: " + line);
+    sstream.ignore(1);
+
+    if (!(sstream >> month))
+        throw std::runtime_error("Wrong date format: " + line);
+    if (sstream.peek() != '-')
+        throw std::runtime_error("Wrong date format: " + line);
+    sstream.ignore(1);
+
+    if (!(sstream >> day))
+        throw std::runtime_error("Wrong date format: " + line);
+    if (sstream.peek() != EOF)
+        throw std::runtime_error("Wrong date format: " + line);
+
+    auto date = Date(year, month, day);
+
+    return date;
 }
