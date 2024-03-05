@@ -5,6 +5,10 @@
 #include <iomanip>
 #include <string>
 
+#ifdef LOCAL_RUN
+#include "yandexTest.h"
+#endif
+
 Date::Date()
 {
     m_year = 0;
@@ -39,6 +43,16 @@ bool operator<(const Date& lhs, const Date& rhs) {
         return lhs.GetMonth() < rhs.GetMonth();
     }
     return lhs.GetDay() < rhs.GetDay();
+}
+
+bool operator!=(const Date& lhs, const Date& rhs) {
+    if (lhs.GetYear() != rhs.GetYear()) {
+        return true;
+    }
+    if (lhs.GetMonth() != rhs.GetMonth()) {
+        return true;
+    }
+    return lhs.GetDay() != rhs.GetDay();
 }
 
 std::ostream& operator<<(std::ostream& stream, const Date& date) {
@@ -77,7 +91,17 @@ Date parseDate(const std::string& line) {
     if (sstream.peek() != EOF)
         throw std::runtime_error("Wrong date format: " + line);
 
-    auto date = Date(year, month, day);
+    return Date(year, month, day);
+}
 
-    return date;
+void testParseDate() {
+    std::string input1 = "2020-01-12";
+    Date expectedDate1 = Date(2020, 1, 12);
+    Date result1 = parseDate(input1);
+    AssertEqual(expectedDate1, result1, "Full format date '2020-01-12'");
+
+    std::string input2 = "2020-1-2";
+    Date expectedDate2 = Date(2020, 1, 2);
+    Date result2 = parseDate(input2);
+    AssertEqual(expectedDate2, result2, "cut format date '2020-1-2'");
 }

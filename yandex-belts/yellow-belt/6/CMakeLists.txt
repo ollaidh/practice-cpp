@@ -3,4 +3,7 @@ project(yandex-yellow-6)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME}
+main.cpp
+date.cpp
+)

@@ -17,3 +17,5 @@ private:
 };
 
 Date parseDate(const std::string& line);
+
+void testParseDate();
