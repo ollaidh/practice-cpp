@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 class Date {
@@ -15,6 +17,10 @@ private:
     int m_month;
     int m_day;
 };
+
+bool operator<(const Date& lhs, const Date& rhs);
+bool operator!=(const Date& lhs, const Date& rhs);
+std::ostream& operator<<(std::ostream& stream, const Date& date);
 
 Date parseDate(const std::string& line);
 
