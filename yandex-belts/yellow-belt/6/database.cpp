@@ -42,14 +42,12 @@ std::set<std::string> Database::Find(const Date& date) const {
     return it->second;
 }
 
-// void Database::Print() const {
-//     for (const auto& [key, value] : m_db) {
-//       for (const auto &event : value) {
-//         // std::cout << key << " " << event << std::endl;
-//         std::cout << key.GetDay() << std::endl;
-
-//       }
-//     }
-// }
+void Database::Print() const {
+    for (const auto& [key, value] : m_db) {
+      for (const auto &event : value) {
+        std::cout << key << " " << event << std::endl;
+      }
+    }
+}
 
 
