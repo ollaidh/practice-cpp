@@ -68,6 +68,7 @@ std::ostream& operator<<(std::ostream& stream, const Date& date) {
     return stream;
 }
 
+// parse date from string into Date object
 Date parseDate(const std::string& line) {
     std::istringstream sstream;
     sstream.str(line);
@@ -94,6 +95,7 @@ Date parseDate(const std::string& line) {
     return Date(year, month, day);
 }
 
+// tests
 void testParseDate() {
     std::string input1 = "2020-01-12";
     Date expectedDate1 = Date(2020, 1, 12);

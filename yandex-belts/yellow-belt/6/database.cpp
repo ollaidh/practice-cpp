@@ -4,10 +4,12 @@
 
 #include "date.h"
 
+// add event for specific date
 void Database::AddEvent(const Date& date, const std::string& event) {
     m_db[date].insert(event);
 }
 
+// delete event for specific date
 bool Database::DeleteEvent(const Date& date, const std::string& event) {
     auto itDate = m_db.find(date);
     if (itDate == m_db.end()) {
@@ -24,6 +26,7 @@ bool Database::DeleteEvent(const Date& date, const std::string& event) {
     return true;
 }
 
+// delete all events for specific date and date itself
 int Database::DeleteDate(const Date& date) {
     int nDelEvents = 0;
     auto it = m_db.find(date);
@@ -34,6 +37,7 @@ int Database::DeleteDate(const Date& date) {
     return nDelEvents;
 }
 
+// find all records for specific date
 std::set<std::string> Database::Find(const Date& date) const {
     auto it = m_db.find(date);
     if (it == m_db.end()) {
@@ -42,6 +46,7 @@ std::set<std::string> Database::Find(const Date& date) const {
     return it->second;
 }
 
+// print all database records
 void Database::Print() const {
     for (const auto& [key, value] : m_db) {
       for (const auto &event : value) {

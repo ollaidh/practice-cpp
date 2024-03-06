@@ -7,10 +7,19 @@
 
 class Database {
 public:
+    // add event for specific date
     void AddEvent(const Date& date, const std::string& event);
+
+    // delete event for specific date
     bool DeleteEvent(const Date& date, const std::string& event);
+
+    // delete all events for specific date and date itself
     int DeleteDate(const Date& date);
+
+    // find all records for specific date
     std::set<std::string> Find(const Date& date) const;
+
+    // print all database records
     void Print() const;
 
 private:
