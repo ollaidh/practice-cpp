@@ -93,6 +93,7 @@ void TestAll() {
 
   #ifdef LOCAL_RUN
   tr.RunTest(testParseDate, "parseDate func (date.cpp)");
+  tr.RunTest(testDatabaseActions, "database actions (database.cpp)");
   #endif
 
   // tr.RunTest(TestParseEvent, "TestParseEvent");

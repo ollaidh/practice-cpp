@@ -4,6 +4,10 @@
 
 #include "date.h"
 
+#ifdef LOCAL_RUN
+#include "yandexTest.h"
+#endif
+
 // add event for specific date
 void Database::AddEvent(const Date& date, const std::string& event) {
     m_db[date].insert(event);
@@ -53,6 +57,24 @@ void Database::Print() const {
         std::cout << key << " " << event << std::endl;
       }
     }
+}
+
+// get whole database:
+std::map<Date, std::set<std::string>> Database::getRecords() {
+    return m_db;
+}
+
+// tests
+void testDatabaseActions() {
+    Database database;
+
+    Date date1 = Date(2020, 02, 01);
+    database.AddEvent(date1, "event1");
+    auto db = database.getRecords();
+    AssertEqual(1, db.size(), "only record in db");
+    Assert(db.find(date1) != db.end(), "added date exists");
+    AssertEqual(std::set<std::string>({"event1"}), db[date1], "right event for added date");
+
 }
 
 

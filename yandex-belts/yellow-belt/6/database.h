@@ -22,6 +22,12 @@ public:
     // print all database records
     void Print() const;
 
+    // get whole database:
+    std::map<Date, std::set<std::string>> getRecords();
+
 private:
     std::map<Date, std::set<std::string>> m_db;
 };
+
+// tests
+void testDatabaseActions();
