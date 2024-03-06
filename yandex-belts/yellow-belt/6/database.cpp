@@ -71,10 +71,14 @@ void testDatabaseActions() {
     Date date1 = Date(2020, 02, 01);
     database.AddEvent(date1, "event1");
     auto db = database.getRecords();
-    AssertEqual(1, db.size(), "only record in db");
+    AssertEqual(1, db.size(), "only date in db");
     Assert(db.find(date1) != db.end(), "added date exists");
     AssertEqual(std::set<std::string>({"event1"}), db[date1], "right event for added date");
 
+    database.AddEvent(date1, "event2");
+    db = database.getRecords();
+    AssertEqual(1, db.size(), "still only date in db");
+    AssertEqual(std::set<std::string>({"event1", "event2"}), db[date1], "two events for one date");
 }
 
 
