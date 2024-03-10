@@ -31,7 +31,6 @@ public:
     DateComparisonNode(Comparison cmp, Date date)
     : m_cmp(cmp)
     , m_date(date) {
-
     }
 
     bool Evaluate(const Date& date, const std::string& event);
@@ -43,7 +42,16 @@ private:
 
 class EventComparisonNode : public Node {
 public:
+    EventComparisonNode(Comparison cmp, const std::string& event)
+    : m_cmp(cmp)
+    , m_event(event) {
+    }
 
+    bool Evaluate(const Date& date, const std::string& event);
+
+private:
+    Comparison m_cmp;
+    std::string m_event;
 };
 
 class LogicalOperationNode : public Node {

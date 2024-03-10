@@ -22,6 +22,23 @@ bool DateComparisonNode::Evaluate(const Date& date, const std::string& event) {
     return false;
 }
 
+bool EventComparisonNode::Evaluate(const Date& date, const std::string& event) {
+    if (m_cmp == Comparison::Equal) {
+        return event == m_event;
+    } else if (m_cmp == Comparison::NotEqual) {
+        return event != m_event;
+    } else if (m_cmp == Comparison::Less) {
+        return event < m_event;
+    } else if (m_cmp == Comparison::LessOrEqual) {
+        return event < m_event || event == m_event;
+    } else if (m_cmp == Comparison::Greater) {
+        return m_event < event;
+    } else if (m_cmp == Comparison::GreaterOrEqual) {
+        return m_event < event || event == m_event;
+    }
+    return false;
+}
+
 bool LogicalOperationNode::Evaluate(const Date& date, const std::string& event) {
     bool left = m_left->Evaluate(date, event);
     bool right = m_right->Evaluate(date, event);
