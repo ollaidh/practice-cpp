@@ -14,7 +14,6 @@ std::ostream& operator<<(std::ostream& stream, const Entry& entry) {
   stream << entry.date;
   stream << " ";
   stream << entry.event;
-  stream << std::endl;
 
   return stream;
 }
