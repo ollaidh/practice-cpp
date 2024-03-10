@@ -13,7 +13,8 @@ public:
 
     // delete record if condition is true
     template<typename Predicate>
-    bool RemoveIf(Predicate predicate) {
+    int RemoveIf(Predicate predicate) {
+        int nDeleted = 0;
         for (auto& [date, events] : m_db) {
             for (const auto &event : events) {
                 if (predicate(date, event)) {
@@ -21,9 +22,11 @@ public:
                     if (events.empty()) {
                         m_db.erase(date);
                     }
+                    nDeleted += 1;
                 }
             }
         }
+        return nDeleted;
     }
 
     // delete all events for specific date and date itself
