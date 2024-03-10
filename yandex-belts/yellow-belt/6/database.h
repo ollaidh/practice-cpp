@@ -14,18 +14,20 @@ public:
     // delete record if condition is true
     template<typename Predicate>
     int RemoveIf(Predicate predicate) {
+        auto curr_db = m_db;
         int nDeleted = 0;
         for (auto& [date, events] : m_db) {
             for (const auto &event : events) {
                 if (predicate(date, event)) {
-                    events.erase(event);
-                    if (events.empty()) {
-                        m_db.erase(date);
+                    curr_db[date].erase(event);
+                    if (curr_db[date].empty()) {
+                        curr_db.erase(date);
                     }
                     nDeleted += 1;
                 }
             }
         }
+        m_db = curr_db;
         return nDeleted;
     }
 
