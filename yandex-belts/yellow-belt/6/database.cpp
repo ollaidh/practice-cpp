@@ -18,19 +18,35 @@ std::ostream& operator<<(std::ostream& stream, const Entry& entry) {
   return stream;
 }
 
+bool operator!=(const Entry& lhs, const Entry& rhs) {
+  if (lhs.date == rhs.date) {
+    return rhs.event != lhs.event;
+  }
+  return true;
+}
+
 
 // add event for specific date
 void Database::Add(const Date& date, const std::string& event) {
     m_db[date].insert(event);
 }
 
-// find all records for specific date
-std::set<std::string> Database::Find(const Date& date) const {
-    auto it = m_db.find(date);
-    if (it == m_db.end()) {
-      return {};
+Entry Database::Last(Date dateLast) const {
+    Date maxDate(0, 0, 0);
+    for (auto& [date, events] : m_db) {
+        for (const auto &event : events) {
+            if (date < dateLast || date == dateLast) {
+                if (maxDate < date) {
+                    maxDate = date;
+                }
+            }
+        }
     }
-    return it->second;
+    if (maxDate == Date(0, 0, 0)) {
+        throw std::invalid_argument("No entries!");
+    }
+    return Entry(maxDate, *m_db.at(maxDate).rbegin());
+
 }
 
 // print all database records
@@ -64,15 +80,10 @@ void testDatabaseActions() {
     AssertEqual(1, db.size(), "still only date in db");
     AssertEqual(std::set<std::string>({"event1", "event11"}), db[date1], "two events for one date");
 
-    AssertEqual(database.Find(date1), std::set<std::string>({"event1", "event11"}), "Find method test");
-
     Date date2 = Date(2021, 12, 11);
     database.Add(date2, "event2");
     database.Add(date2, "event22");
     database.Add(date2, "event222");
-
-    AssertEqual(database.Find(date2), std::set<std::string>({"event2", "event22", "event222"}),
-                "check date exists with right events");
 
     // Delete event "Event222" of date 2021-12-11
     std::string line = "date == 2021-12-11 AND event == \"event22\"";
@@ -116,6 +127,16 @@ void testDatabaseActions() {
     AssertEqual(result3[0].event, "event3", "event3 is found");
     AssertEqual(result3[1].event, "event33", "event33 is found");
     AssertEqual(result3[2].event, "event333", "event333 is found");
+
+    // Get last entry for certain date:
+    auto last1 = database.Last(date3);
+    AssertEqual(Entry(date3, "event333"), last1, "check last added");
+
+    Date lastDate2(2023, 1, 1);
+    auto last2 = database.Last(lastDate2);
+    AssertEqual(Entry(date1, "event11"), last2, "check last added by 2023-01-01");
+
+
 
 }
 #endif

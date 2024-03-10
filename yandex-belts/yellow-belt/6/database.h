@@ -19,6 +19,7 @@ struct Entry {
 
 std::ostream& operator<<(std::ostream& stream, const Entry& entry);
 
+bool operator!=(const Entry& lhs, const Entry& rhs);
 
 class Database {
 public:
@@ -48,7 +49,7 @@ public:
 
     // find all records for which condition is true
     template<typename Predicate>
-    std::vector<Entry> FindIf(Predicate predicate) {
+    std::vector<Entry> FindIf(Predicate predicate) const{
         std::vector<Entry> entries;
         for (auto& [date, events] : m_db) {
             for (const auto &event : events) {
@@ -60,11 +61,8 @@ public:
         return entries;
     }
 
-    // delete all events for specific date and date itself
-    int DeleteDate(const Date& date);
-
-    // find all records for specific date
-    std::set<std::string> Find(const Date& date) const;
+    // find last record for date (equal or earlier)
+    Entry Last(Date dateLast) const;
 
     // print all database records
     void Print(std::ostream& stream) const;
