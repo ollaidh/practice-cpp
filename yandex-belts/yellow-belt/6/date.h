@@ -22,8 +22,7 @@ bool operator<(const Date& lhs, const Date& rhs);
 bool operator!=(const Date& lhs, const Date& rhs);
 std::ostream& operator<<(std::ostream& stream, const Date& date);
 
-// parse date from string into Date object
-Date parseDate(const std::string& line);
+Date ParseDate(std::istream& stream);
 
 // tests
 void testParseDate();

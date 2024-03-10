@@ -8,7 +8,7 @@
 class Database {
 public:
     // add event for specific date
-    void AddEvent(const Date& date, const std::string& event);
+    void Add(const Date& date, const std::string& event);
 
     // delete event for specific date
     bool DeleteEvent(const Date& date, const std::string& event);

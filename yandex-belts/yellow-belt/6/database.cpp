@@ -9,7 +9,7 @@
 #endif
 
 // add event for specific date
-void Database::AddEvent(const Date& date, const std::string& event) {
+void Database::Add(const Date& date, const std::string& event) {
     m_db[date].insert(event);
 }
 
