@@ -71,7 +71,6 @@ void testDatabaseActions() {
     database.Add(date2, "event2");
     database.Add(date2, "event22");
     database.Add(date2, "event222");
-    Date date3 = Date(2022, 12, 21);
 
     AssertEqual(database.Find(date2), std::set<std::string>({"event2", "event22", "event222"}),
                 "check date exists with right events");
@@ -100,6 +99,24 @@ void testDatabaseActions() {
     AssertEqual(2, nRemoved2, "Removed 2 records");
     db = database.getRecords();
     Assert(db.find(date2) == db.end(), "Deleted all records from day and day itself");
+
+    // Find all records for conditions
+    Date date3 = Date(2023, 12, 21);
+    database.Add(date3, "event3");
+    database.Add(date3, "event33");
+    database.Add(date3, "event333");
+
+    line = "date == 2023-12-21";
+    istringstream is3(line);
+    auto condition3 = ParseCondition(is3);
+    auto predicate3 = [condition3](const Date& date, const string& event) {
+      return condition3->Evaluate(date, event);
+    };
+    auto result3 = database.FindIf(predicate3);
+    AssertEqual(3, result3.size(), "3 entries found by condition");
+    AssertEqual(result3[0].event, "event3", "event3 is found");
+    AssertEqual(result3[1].event, "event33", "event33 is found");
+    AssertEqual(result3[2].event, "event333", "event333 is found");
 
 }
 #endif

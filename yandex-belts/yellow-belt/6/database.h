@@ -3,6 +3,7 @@
 #include <map>
 #include <ostream>
 #include <set>
+#include <vector>
 
 #include "date.h"
 
@@ -46,23 +47,18 @@ public:
     }
 
     // find all records for which condition is true
-    // template<typename Predicate>
-    // int FindIf(Predicate predicate) {
-    //     int nDeleted = 0;
-    //     for (auto& [date, events] : m_db) {
-    //         for (const auto &event : events) {
-    //             if (predicate(date, event)) {
-    //                 curr_db[date].erase(event);
-    //                 if (curr_db[date].empty()) {
-    //                     curr_db.erase(date);
-    //                 }
-    //                 nDeleted += 1;
-    //             }
-    //         }
-    //     }
-    //     m_db = curr_db;
-    //     return nDeleted;
-    // }
+    template<typename Predicate>
+    std::vector<Entry> FindIf(Predicate predicate) {
+        std::vector<Entry> entries;
+        for (auto& [date, events] : m_db) {
+            for (const auto &event : events) {
+                if (predicate(date, event)) {
+                    entries.push_back(Entry(date, event));
+                }
+            }
+        }
+        return entries;
+    }
 
     // delete all events for specific date and date itself
     int DeleteDate(const Date& date);

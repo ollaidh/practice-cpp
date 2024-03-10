@@ -7,4 +7,7 @@ add_executable(${PROJECT_NAME}
 main.cpp
 date.cpp
 database.cpp
+node.cpp
+condition_parser.cpp
+token.cpp
 )
