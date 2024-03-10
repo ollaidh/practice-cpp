@@ -55,6 +55,16 @@ bool operator!=(const Date& lhs, const Date& rhs) {
     return lhs.GetDay() != rhs.GetDay();
 }
 
+bool operator==(const Date& lhs, const Date& rhs) {
+    if (lhs.GetYear() != rhs.GetYear()) {
+        return false;
+    }
+    if (lhs.GetMonth() != rhs.GetMonth()) {
+        return false;
+    }
+    return lhs.GetDay() == rhs.GetDay();
+}
+
 std::ostream& operator<<(std::ostream& stream, const Date& date) {
     stream << std::setw(4);
     stream << std::setfill('0');
