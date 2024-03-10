@@ -33,7 +33,20 @@ public:
     }
 
     bool Evaluate(const Date& date, const std::string& event) {
-        // compare m_date with date according to m_cmp, ignore event
+        if (m_cmp == Comparison::Equal) {
+            return date == m_date;
+        } else if (m_cmp == Comparison::NotEqual) {
+            return date != m_date;
+        } else if (m_cmp == Comparison::Less) {
+            return date < m_date;
+        } else if (m_cmp == Comparison::LessOrEqual) {
+            return date < m_date || date == m_date;
+        } else if (m_cmp == Comparison::Greater) {
+            return m_date < date;
+        } else if (m_cmp == Comparison::GreaterOrEqual) {
+            return m_date < date || date == m_date;
+        }
+        return false;
     }
 
 private:
