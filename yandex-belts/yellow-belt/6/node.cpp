@@ -1,11 +1,11 @@
 #include "node.h"
 
 
-bool EmptyNode::Evaluate(const Date& date, const std::string& event) {
+bool EmptyNode::Evaluate(const Date& date, const std::string& event) const {
     return false;
 }
 
-bool DateComparisonNode::Evaluate(const Date& date, const std::string& event) {
+bool DateComparisonNode::Evaluate(const Date& date, const std::string& event) const {
     if (m_cmp == Comparison::Equal) {
         return date == m_date;
     } else if (m_cmp == Comparison::NotEqual) {
@@ -22,7 +22,7 @@ bool DateComparisonNode::Evaluate(const Date& date, const std::string& event) {
     return false;
 }
 
-bool EventComparisonNode::Evaluate(const Date& date, const std::string& event) {
+bool EventComparisonNode::Evaluate(const Date& date, const std::string& event) const {
     if (m_cmp == Comparison::Equal) {
         return event == m_event;
     } else if (m_cmp == Comparison::NotEqual) {
@@ -39,7 +39,7 @@ bool EventComparisonNode::Evaluate(const Date& date, const std::string& event) {
     return false;
 }
 
-bool LogicalOperationNode::Evaluate(const Date& date, const std::string& event) {
+bool LogicalOperationNode::Evaluate(const Date& date, const std::string& event) const {
     bool left = m_left->Evaluate(date, event);
     bool right = m_right->Evaluate(date, event);
     if (m_op == LogicalOperation::And) {

@@ -23,7 +23,7 @@ public:
 
 class EmptyNode : public Node {
 public:
-    bool Evaluate(const Date& date, const std::string& event);
+    bool Evaluate(const Date& date, const std::string& event) const override;
 };
 
 class DateComparisonNode : public Node {
@@ -33,7 +33,7 @@ public:
     , m_date(date) {
     }
 
-    bool Evaluate(const Date& date, const std::string& event);
+    bool Evaluate(const Date& date, const std::string& event) const override;
 
 private:
     Comparison m_cmp;
@@ -47,7 +47,7 @@ public:
     , m_event(event) {
     }
 
-    bool Evaluate(const Date& date, const std::string& event);
+    bool Evaluate(const Date& date, const std::string& event) const override;
 
 private:
     Comparison m_cmp;
@@ -63,7 +63,7 @@ public:
 
     }
 
-    bool Evaluate(const Date& date, const std::string& event);
+    bool Evaluate(const Date& date, const std::string& event) const override;
 
 private:
 
