@@ -51,9 +51,9 @@ Entry Database::Last(Date dateLast) const {
 
 // print all database records
 void Database::Print(std::ostream& stream) const {
-  for (const auto& [key, value] : m_db) {
-    for (const auto &event : value) {
-      stream << key << " " << value << std::endl;
+  for (const auto& [date, events] : m_db) {
+    for (const auto &event : events) {
+      stream << date << " " << event << std::endl;
     }
   }
 }
