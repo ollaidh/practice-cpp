@@ -5,9 +5,7 @@
 #include <iomanip>
 #include <string>
 
-#ifdef LOCAL_RUN
-#include "yandexTest.h"
-#endif
+#include "test_runner.h"
 
 Date::Date()
 {

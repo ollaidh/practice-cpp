@@ -2,17 +2,15 @@
 #include <stdexcept>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "date.h"
 #include "database.h"
 #include "condition_parser.h"
 #include "node.h"
 #include "condition_parser.h"
-// #include "test_runner.h"
+#include "test_runner.h"
 
-#ifdef LOCAL_RUN
-#include "yandexTest.h"
-#endif
 
 using namespace std;
 
@@ -38,61 +36,61 @@ void TestAll();
 int main() {
   TestAll();
 
-  // Database db;
+  Database db;
 
-  // for (string line; getline(cin, line); ) {
-  //   istringstream is(line);
+  for (string line; getline(cin, line); ) {
+    istringstream is(line);
 
-  //   string command;
-  //   is >> command;
-  //   if (command == "Add") {
-  //     const auto date = ParseDate(is);
-  //     const auto event = ParseEvent(is);
-  //     db.Add(date, event);
-  //   }
+    string command;
+    is >> command;
+    if (command == "Add") {
+      const auto date = ParseDate(is);
+      const auto event = ParseEvent(is);
+      db.Add(date, event);
+    }
 
-  //   else if (command == "Print") {
-  //     db.Print(cout);
-  //   }
+    else if (command == "Print") {
+      db.Print(cout);
+    }
 
-  //   else if (command == "Del") {
-  //     auto condition = ParseCondition(is);
-  //     auto predicate = [condition](const Date& date, const string& event) {
-  //       return condition->Evaluate(date, event);
-  //     };
-  //     int count = db.RemoveIf(predicate);
-  //     cout << "Removed " << count << " entries" << endl;
-  //   }
+    else if (command == "Del") {
+      auto condition = ParseCondition(is);
+      auto predicate = [condition](const Date& date, const string& event) {
+        return condition->Evaluate(date, event);
+      };
+      int count = db.RemoveIf(predicate);
+      cout << "Removed " << count << " entries" << endl;
+    }
 
-  //   else if (command == "Find") {
-  //     auto condition = ParseCondition(is);
-  //     auto predicate = [condition](const Date& date, const string& event) {
-  //       return condition->Evaluate(date, event);
-  //     };
+    else if (command == "Find") {
+      auto condition = ParseCondition(is);
+      auto predicate = [condition](const Date& date, const string& event) {
+        return condition->Evaluate(date, event);
+      };
 
-  //     const auto entries = db.FindIf(predicate);
-  //     for (const auto& entry : entries) {
-  //       cout << entry << endl;
-  //     }
-  //     cout << "Found " << entries.size() << " entries" << endl;
-  //   }
+      const auto entries = db.FindIf(predicate);
+      for (const auto& entry : entries) {
+        cout << entry << endl;
+      }
+      cout << "Found " << entries.size() << " entries" << endl;
+    }
 
-  //   else if (command == "Last") {
-  //     try {
-  //         cout << db.Last(ParseDate(is)) << endl;
-  //     } catch (invalid_argument&) {
-  //         cout << "No entries" << endl;
-  //     }
-  //   }
+    else if (command == "Last") {
+      try {
+          cout << db.Last(ParseDate(is)) << endl;
+      } catch (invalid_argument&) {
+          cout << "No entries" << endl;
+      }
+    }
 
-  //   else if (command.empty()) {
-  //     continue;
-  //   }
+    else if (command.empty()) {
+      continue;
+    }
 
-  //   else {
-  //     throw logic_error("Unknown command: " + command);
-  //   }
-  // }
+    else {
+      throw logic_error("Unknown command: " + command);
+    }
+  }
 
   return 0;
 }

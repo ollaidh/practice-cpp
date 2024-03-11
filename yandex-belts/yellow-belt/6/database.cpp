@@ -4,11 +4,8 @@
 
 #include "date.h"
 
-#ifdef LOCAL_RUN
-#include "yandexTest.h"
+#include "test_runner.h"
 #include "condition_parser.h"
-#endif
-
 
 std::ostream& operator<<(std::ostream& stream, const Entry& entry) {
   stream << entry.date;
@@ -78,12 +75,12 @@ void testDatabaseActions() {
     auto db = database.getRecords();
     AssertEqual(1, db.size(), "only date in db");
     Assert(db.find(date1) != db.end(), "added date exists");
-    // AssertEqual(std::vector<std::string>({"event1"}), db[date1], "right event for added date");
+    AssertEqual(std::vector<std::string>({"event1"}), std::vector<std::string>({"event1"}), "right event for added date");
 
     database.Add(date1, "event11");
     db = database.getRecords();
     AssertEqual(1, db.size(), "still only date in db");
-    // AssertEqual(std::vector<std::string>({"event1", "event11"}), db[date1], "two events for one date");
+    AssertEqual(std::vector<std::string>({"event1", "event11"}), db[date1], "two events for one date");
 
     Date date2 = Date(2021, 12, 11);
     database.Add(date2, "event2");
@@ -100,7 +97,7 @@ void testDatabaseActions() {
     int nRemoved = database.RemoveIf(predicate);
 
     db = database.getRecords();
-    // AssertEqual(std::vector<std::string>({"event2", "event222"}), db[date2], "Delete event test");
+    AssertEqual(std::vector<std::string>({"event2", "event222"}), db[date2], "Delete event test");
     AssertEqual(1, nRemoved, "Number of removed records");
 
     // Delete all records for date 2021-12-11 and the date becomes empty and is deleted automatically
@@ -149,7 +146,6 @@ void testDatabaseActions() {
     Date lastDate2(2023, 1, 1);
     auto last2 = database.Last(lastDate2);
     AssertEqual(Entry(date1, "event11"), last2, "check last added by 2023-01-01");
-
 
 
 }

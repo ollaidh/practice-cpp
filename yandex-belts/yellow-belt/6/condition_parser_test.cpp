@@ -2,6 +2,7 @@
 #include "test_runner.h"
 
 #include <sstream>
+#include <memory>
 using namespace std;
 
 void TestParseCondition() {
