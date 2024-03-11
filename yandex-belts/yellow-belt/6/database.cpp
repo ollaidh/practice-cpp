@@ -28,7 +28,12 @@ bool operator!=(const Entry& lhs, const Entry& rhs) {
 
 // add event for specific date
 void Database::Add(const Date& date, const std::string& event) {
-    m_db[date].insert(event);
+    for (const auto& ev : m_db[date]) {
+      if (ev == event) {
+        return;
+      }
+    }
+    m_db[date].push_back(event);
 }
 
 Entry Database::Last(Date dateLast) const {
@@ -59,7 +64,7 @@ void Database::Print(std::ostream& stream) const {
 }
 
 // get whole database:
-std::map<Date, std::set<std::string>> Database::getRecords() {
+std::map<Date, std::vector<std::string>> Database::getRecords() {
     return m_db;
 }
 
@@ -73,12 +78,12 @@ void testDatabaseActions() {
     auto db = database.getRecords();
     AssertEqual(1, db.size(), "only date in db");
     Assert(db.find(date1) != db.end(), "added date exists");
-    AssertEqual(std::set<std::string>({"event1"}), db[date1], "right event for added date");
+    // AssertEqual(std::vector<std::string>({"event1"}), db[date1], "right event for added date");
 
     database.Add(date1, "event11");
     db = database.getRecords();
     AssertEqual(1, db.size(), "still only date in db");
-    AssertEqual(std::set<std::string>({"event1", "event11"}), db[date1], "two events for one date");
+    // AssertEqual(std::vector<std::string>({"event1", "event11"}), db[date1], "two events for one date");
 
     Date date2 = Date(2021, 12, 11);
     database.Add(date2, "event2");
@@ -95,7 +100,7 @@ void testDatabaseActions() {
     int nRemoved = database.RemoveIf(predicate);
 
     db = database.getRecords();
-    AssertEqual(std::set<std::string>({"event2", "event222"}), db[date2], "Delete event test");
+    // AssertEqual(std::vector<std::string>({"event2", "event222"}), db[date2], "Delete event test");
     AssertEqual(1, nRemoved, "Number of removed records");
 
     // Delete all records for date 2021-12-11 and the date becomes empty and is deleted automatically

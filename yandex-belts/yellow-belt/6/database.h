@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iterator>
 #include <map>
 #include <ostream>
 #include <set>
@@ -35,7 +36,12 @@ public:
         for (auto& [date, events] : m_db) {
             for (const auto &event : events) {
                 if (predicate(date, event)) {
-                    curr_db[date].erase(event);
+                    for (auto it = curr_db[date].begin(); it != curr_db[date].end(); it++) {
+                        if (*it == event) {
+                            curr_db[date].erase(it);
+                            break;
+                        }
+                    }
                     if (curr_db[date].empty()) {
                         curr_db.erase(date);
                     }
@@ -68,10 +74,10 @@ public:
     void Print(std::ostream& stream) const;
 
     // get whole database:
-    std::map<Date, std::set<std::string>> getRecords();
+    std::map<Date, std::vector<std::string>> getRecords();
 
 private:
-    std::map<Date, std::set<std::string>> m_db;
+    std::map<Date, std::vector<std::string>> m_db;
 };
 
 // tests
