@@ -133,6 +133,15 @@ void testDatabaseActions() {
     AssertEqual(result3[1].event, "event33", "event33 is found");
     AssertEqual(result3[2].event, "event333", "event333 is found");
 
+    line = "date == 2003-12-21 OR date == 2023-12-21";
+    istringstream is4(line);
+    auto condition4 = ParseCondition(is4);
+    auto predicate4 = [condition3](const Date& date, const string& event) {
+      return condition3->Evaluate(date, event);
+    };
+    auto result4 = database.FindIf(predicate4);
+    AssertEqual(3, result4.size(), "3 entries found by condition");
+
     // Get last entry for certain date:
     auto last1 = database.Last(date3);
     AssertEqual(Entry(date3, "event333"), last1, "check last added");
