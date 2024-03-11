@@ -1,8 +1,9 @@
 #include "node.h"
+#include <stdexcept>
 
 
 bool EmptyNode::Evaluate(const Date& date, const std::string& event) const {
-    return false;
+    return true;
 }
 
 bool DateComparisonNode::Evaluate(const Date& date, const std::string& event) const {
@@ -44,6 +45,8 @@ bool LogicalOperationNode::Evaluate(const Date& date, const std::string& event) 
     bool right = m_right->Evaluate(date, event);
     if (m_op == LogicalOperation::And) {
         return left && right;
+    } else if (m_op == LogicalOperation::Or) {
+        return left || right;
     }
-    return left || right;
+    throw std::invalid_argument("crap");
 }

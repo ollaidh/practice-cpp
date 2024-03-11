@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "date.h"
 
 enum class Comparison {
