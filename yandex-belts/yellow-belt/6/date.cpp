@@ -83,22 +83,20 @@ Date ParseDate(std::istream& stream) {
     int year, month, day;
 
     if (!(stream >> year))
-        throw std::runtime_error("Wrong date format");
+        throw std::runtime_error("Wrong date format1");
 
     if (stream.peek() != '-')
-        throw std::runtime_error("Wrong date format");
+        throw std::runtime_error("Wrong date format2");
     stream.ignore(1);
 
     if (!(stream >> month))
-        throw std::runtime_error("Wrong date format");
+        throw std::runtime_error("Wrong date format3");
     if (stream.peek() != '-')
-        throw std::runtime_error("Wrong date format");
+        throw std::runtime_error("Wrong date format4");
     stream.ignore(1);
 
     if (!(stream >> day))
-        throw std::runtime_error("Wrong date format");
-    if (stream.peek() != EOF)
-        throw std::runtime_error("Wrong date format");
+        throw std::runtime_error("Wrong date format5");
 
     return Date(year, month, day);
 }
