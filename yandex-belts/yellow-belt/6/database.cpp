@@ -27,12 +27,11 @@ bool operator!=(const Entry& lhs, const Entry& rhs) {
 
 // add event for specific date
 void Database::Add(const Date& date, const std::string& event) {
-    for (const auto& ev : m_db[date]) {
-      if (ev == event) {
-        return;
-      }
+    if (m_db_set.find(date) != m_db_set.end() && m_db_set.at(date).find(event) != m_db_set.at(date).end()) {
+      return;
     }
     m_db[date].push_back(event);
+    m_db_set[date].insert(event);
 }
 
 Entry Database::Last(const Date& dateLast) const {

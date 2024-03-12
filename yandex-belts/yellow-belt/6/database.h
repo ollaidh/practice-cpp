@@ -45,6 +45,7 @@ public:
             if (it !=  events.end()) {
                 for (auto delIt = std::prev(events.end()); delIt != std::prev(it); delIt--) {
                     events.erase(delIt);
+                    m_db_set[date].erase(*delIt);
                     nDeleted += 1;
                 }
             }
@@ -56,6 +57,7 @@ public:
 
         for (auto& date : emptyDates) {
             m_db.erase(date);
+            m_db_set.erase(date);
         }
         return nDeleted;
     }
@@ -85,6 +87,7 @@ public:
 
 private:
     std::map<Date, std::vector<std::string>> m_db;
+    std::map<Date, std::set<std::string>> m_db_set;
 };
 
 // tests
