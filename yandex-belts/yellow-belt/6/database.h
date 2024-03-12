@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <iterator>
 #include <map>
 #include <ostream>
@@ -33,23 +34,29 @@ public:
     int RemoveIf(Predicate predicate) {
         auto curr_db = m_db;
         int nDeleted = 0;
+        std::vector<Date> emptyDates;
         for (auto& [date, events] : m_db) {
-            for (const auto &event : events) {
-                if (predicate(date, event)) {
-                    for (auto it = curr_db[date].begin(); it != curr_db[date].end(); it++) {
-                        if (*it == event) {
-                            curr_db[date].erase(it);
-                            break;
-                        }
-                    }
-                    if (curr_db[date].empty()) {
-                        curr_db.erase(date);
-                    }
+            auto& d = date;
+            auto it = std::stable_partition(events.begin(),
+                                            events.end(),
+                                            [&](const std::string& event) {
+               return !predicate(d, event);
+            });
+            if (it !=  events.end()) {
+                for (auto delIt = std::prev(events.end()); delIt != std::prev(it); delIt--) {
+                    events.erase(delIt);
                     nDeleted += 1;
                 }
             }
+            if (events.empty()) {
+                emptyDates.push_back(date);
+            }
+
         }
-        m_db = curr_db;
+
+        for (auto& date : emptyDates) {
+            m_db.erase(date);
+        }
         return nDeleted;
     }
 

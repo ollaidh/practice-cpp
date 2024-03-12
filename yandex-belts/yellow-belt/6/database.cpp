@@ -81,7 +81,7 @@ void testDatabaseActions() {
     database.Add(date2, "event22");
     database.Add(date2, "event222");
 
-    // Delete event "Event222" of date 2021-12-11
+    // Delete event "event22" of date 2021-12-11
     std::string line = "date == 2021-12-11 AND event == \"event22\"";
     istringstream is(line);
     auto condition = ParseCondition(is);
