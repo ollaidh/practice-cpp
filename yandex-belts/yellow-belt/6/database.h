@@ -68,7 +68,7 @@ public:
     }
 
     // find last record for date (equal or earlier)
-    Entry Last(Date dateLast) const;
+    Entry Last(const Date& dateLast) const;
 
     // print all database records
     void Print(std::ostream& stream) const;

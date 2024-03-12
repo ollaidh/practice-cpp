@@ -1,6 +1,8 @@
 #include "database.h"
 
+#include <algorithm>
 #include <iostream>
+#include <iterator>
 
 #include "date.h"
 
@@ -33,21 +35,13 @@ void Database::Add(const Date& date, const std::string& event) {
     m_db[date].push_back(event);
 }
 
-Entry Database::Last(Date dateLast) const {
-    Date maxDate(0, 0, 0);
-    for (auto& [date, events] : m_db) {
-        for (const auto &event : events) {
-            if (date < dateLast || date == dateLast) {
-                if (maxDate < date) {
-                    maxDate = date;
-                }
-            }
-        }
-    }
-    if (maxDate == Date(0, 0, 0)) {
+Entry Database::Last(const Date& dateLast) const {
+    auto dateIt = m_db.upper_bound(dateLast);
+    if (dateIt == m_db.begin()) {
         throw std::invalid_argument("No entries!");
     }
-    return Entry(maxDate, *m_db.at(maxDate).rbegin());
+    auto date = (std::prev(dateIt))->first;
+    return Entry(date, *m_db.at(date).rbegin());
 
 }
 
