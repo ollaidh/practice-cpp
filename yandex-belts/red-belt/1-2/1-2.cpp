@@ -6,12 +6,22 @@
 #include <forward_list>
 #include <numeric>
 #include <iterator>
+#include <memory>
+#include <algorithm>
+
 
 using namespace std;
 
 template<typename ForwardIterator, typename UnaryPredicate>
 ForwardIterator max_element_if(ForwardIterator first, ForwardIterator last, UnaryPredicate pred) {
-  // Реализуйте эту функцию
+    auto result  = last;
+    for (auto it = first; it != last; ++it) {
+        if (!pred(*it))
+            continue;
+        if (result == last || *it > *result)
+            result = it;
+    }
+    return result;
 }
 
 void TestUniqueMax() {
