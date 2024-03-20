@@ -11,7 +11,21 @@ public:
   void SetLogLine(bool value) { log_line = value; }
   void SetLogFile(bool value) { log_file= value; }
 
-  void Log(const string& message);
+  void Log(const string& message) {
+    os << message;
+  }
+
+  bool getLogLine() {
+    return log_line;
+  }
+
+  bool getLogFile() {
+    return log_file;
+  }
+
+ostream& getStream() {
+  return os;
+}
 
 private:
   ostream& os;
@@ -19,7 +33,23 @@ private:
   bool log_file = false;
 };
 
-#define LOG(logger, message) ...
+#define LOG(logger, message) {                              \
+  string msg;                                               \
+  if (logger.getLogLine()) {                                \
+    if (logger.getLogFile()) {                                \
+      logger.getStream() << __FILE_NAME__<< ":" << __LINE__ << " " << message << endl; \
+    } else {                                                \
+      logger.getStream() << "Line "  << __LINE__ << " " << message << endl;                   \
+    }                                                       \
+  } else {  \
+    if (logger.getLogFile()) { \
+      logger.getStream() << __FILE_NAME__ << " " <<  message << endl;                    \
+    } else {  \
+      logger.getStream() << message << endl;    \
+    }                                                  \
+  }                                                         \
+  logger.Log(msg);                                          \
+}
 
 void TestLog() {
 /* Для написания юнит-тестов в этой задаче нам нужно фиксировать конкретные
