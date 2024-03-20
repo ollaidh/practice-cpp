@@ -136,6 +136,7 @@ add_subdirectory(yandex-belts/yellow-belt/5-2-2)
 add_subdirectory(yandex-belts/yellow-belt/5-2-3)
 add_subdirectory(yandex-belts/yellow-belt/6)
 add_subdirectory(yandex-belts/red-belt/1-2)
+add_subdirectory(yandex-belts/red-belt/1-4)
 
 
 
