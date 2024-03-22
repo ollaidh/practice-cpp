@@ -20,6 +20,14 @@ std::ostream & operator<<(std::ostream & stream, const Date & date)
     stream << date.year << "-" << date.month << "-" << date.day;
     return stream;
 }
+std::istream& operator>>(std::istream& stream, Date& date) {
+    char dash;
+    // stream >> date.year >> dash >> date.month >> dash >> date.day;
+    stream >> date.year;
+    stream >> date.month;
+    stream >> date.day;
+    return stream;
+}
 bool operator==(const Time & lhs, const Time &rhs)
 {
     return std::make_tuple(lhs.hours, lhs.minutes) ==
@@ -35,8 +43,19 @@ std::ostream & operator<<(std::ostream & stream, const Time & time)
     stream << time.hours << "-" << time.minutes;
     return stream;
 }
+std::istream& operator>>(std::istream& stream, Time& time) {
+    char colon;
+    stream >> time.hours >> colon >> time.minutes;
+    return stream;
+}
 
-#define UPDATE_FIELD(ticket, field, values)
+
+#define UPDATE_FIELD(ticket, field, values) {  \
+    [](AirlineTicket& ticket, auto& values){  \
+      std::istringstream is(values.at(#field)); \
+      is >> ticket.field; \
+    };  \
+}
 
 void TestUpdate() {
   AirlineTicket t;
