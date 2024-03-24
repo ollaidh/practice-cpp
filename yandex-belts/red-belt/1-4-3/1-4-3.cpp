@@ -4,6 +4,13 @@
 #include "test_runner.h"
 #include <algorithm>
 #include <numeric>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <typeinfo>
+
+#include <iostream>
+
 using namespace std;
 bool operator==(const Date & lhs, const Date &rhs)
 {
@@ -22,21 +29,18 @@ std::ostream & operator<<(std::ostream & stream, const Date & date)
 }
 std::istream& operator>>(std::istream& stream, Date& date) {
     char dash;
-    // stream >> date.year >> dash >> date.month >> dash >> date.day;
-    stream >> date.year;
-    stream >> date.month;
-    stream >> date.day;
+    stream >> date.year >> dash >> date.month >> dash >> date.day;
     return stream;
 }
 bool operator==(const Time & lhs, const Time &rhs)
 {
     return std::make_tuple(lhs.hours, lhs.minutes) ==
-           std::make_tuple(rhs.hours, rhs.hours);
+           std::make_tuple(rhs.hours, rhs.minutes);
 }
 bool operator<(const Time & lhs, const Time &rhs)
 {
-    return std::make_tuple(lhs.hours, lhs.minutes) ==
-           std::make_tuple(rhs.hours, rhs.hours);
+    return std::make_tuple(lhs.hours, lhs.minutes) <
+           std::make_tuple(rhs.hours, rhs.minutes);
 }
 std::ostream & operator<<(std::ostream & stream, const Time & time)
 {
@@ -50,12 +54,12 @@ std::istream& operator>>(std::istream& stream, Time& time) {
 }
 
 
-#define UPDATE_FIELD(ticket, field, values) {  \
-    [](AirlineTicket& ticket, auto& values){  \
-      std::istringstream is(values.at(#field)); \
-      is >> ticket.field; \
-    };  \
-}
+#define UPDATE_FIELD(ticket, field, values) { \
+      if (values.find(#field) != values.end()) {  \
+        std::istringstream is(values.at(#field)); \
+        is >> ticket.field; \
+      }  \
+    }  \
 
 void TestUpdate() {
   AirlineTicket t;
@@ -66,10 +70,15 @@ void TestUpdate() {
     {"departure_time", "17:40"},
   };
   UPDATE_FIELD(t, departure_date, updates1);
+  // std::cout << t.departure_time << std::endl;
   UPDATE_FIELD(t, departure_time, updates1);
+  // std::cout << t.departure_time << std::endl;
+
   UPDATE_FIELD(t, price, updates1);
 
   ASSERT_EQUAL(t.departure_date, (Date{2018, 2, 28}));
+  // std::cout << t.departure_time << std::endl;
+
   ASSERT_EQUAL(t.departure_time, (Time{17, 40}));
   ASSERT_EQUAL(t.price, 0);
 
